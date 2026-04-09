@@ -1,4 +1,4 @@
-from motor_grafico import setPixel
+from lib.Motor_grafico import setPixel
 
 def reta_dda(superficie, x0, y0, x1, y1, cor):
     dx = x1 - x0
@@ -23,7 +23,6 @@ def reta_dda(superficie, x0, y0, x1, y1, cor):
 
 
 def reta_bresenham(superficie, x0, y0, x1, y1, cor):
-    # Flags para transformações
     steep = abs(y1 - y0) > abs(x1 - x0)
     if steep:
         x0, y0 = y0, x0
@@ -41,7 +40,6 @@ def reta_bresenham(superficie, x0, y0, x1, y1, cor):
         ystep = -1
         dy = -dy
 
-    # Bresenham clássico
     d = 2 * dy - dx
     incE = 2 * dy
     incNE = 2 * (dy - dx)
