@@ -14,16 +14,17 @@ running = True
 ameba_pos_x = WIDTH / 2
 ameba_pos_y = HEIGHT / 2
 ameba_r = 1
-
+animation = 1
+    
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
     screen.fill((255, 255, 255))
-    draw_ameba(screen, (0,0,0), ameba_pos_x, ameba_pos_y, ameba_r)
-    ameba_pos_x+=0.5
-    ameba_r+=0.2
+    draw_ameba(screen, (0,0,0), ameba_pos_x, ameba_pos_y, ameba_r, animation)
+    ameba_pos_x+=0.02
+    animation+=1
 
 
     pygame.display.flip()

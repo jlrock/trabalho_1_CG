@@ -2,10 +2,11 @@ import math
 
 from lib.Primitivas import desenhar_poligono
 
-def draw_ameba(superficie, cor, w, h, R):
-    A = R/15
+def draw_ameba(superficie, cor, w, h, r, animation):
+    animated_r = math.sin(animation/10)/5 + r
+    A = r*animated_r/15
     N = 20
-    pontos_da_curva = gerar_pontos_curva(R, A, N, w, h)
+    pontos_da_curva = gerar_pontos_curva(r*animated_r, A, N, w, h)
     desenhar_poligono(superficie, pontos_da_curva, cor)
 
 def gerar_pontos_curva(R, A, N, center_x, center_y, resolucao=1920):
