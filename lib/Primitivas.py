@@ -22,7 +22,7 @@ def reta_dda(superficie, x0, y0, x1, y1, cor):
         y += y_inc
 
 
-def reta_bresenham(superficie, x0, y0, x1, y1, cor):
+def bresenham(superficie, x0, y0, x1, y1, cor):
     steep = abs(y1 - y0) > abs(x1 - x0)
     if steep:
         x0, y0 = y0, x0
@@ -66,4 +66,4 @@ def desenhar_poligono(superficie, pontos, cor_borda):
     for i in range(n):
         x0, y0 = pontos[i]
         x1, y1 = pontos[(i + 1) % n]
-        reta_bresenham(superficie, x0, y0, x1, y1, cor_borda)
+        bresenham(superficie, x0, y0, x1, y1, cor_borda)
