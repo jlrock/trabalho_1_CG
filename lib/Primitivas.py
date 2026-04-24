@@ -1,26 +1,5 @@
 from lib.Motor_grafico import setPixel
-
-def reta_dda(superficie, x0, y0, x1, y1, cor):
-    dx = x1 - x0
-    dy = y1 - y0
-
-    passos = max(abs(dx), abs(dy))
-
-    if passos == 0:
-        setPixel(superficie, x0, y0, cor)
-        return
-
-    x_inc = dx / passos
-    y_inc = dy / passos
-
-    x = x0
-    y = y0
-
-    for _ in range(passos + 1):
-        setPixel(superficie, round(x), round(y), cor)
-        x += x_inc
-        y += y_inc
-
+from lib.Recorte import *
 
 def bresenham(superficie, x0, y0, x1, y1, cor):
     steep = abs(y1 - y0) > abs(x1 - x0)
@@ -67,3 +46,21 @@ def desenhar_poligono(superficie, pontos, cor_borda):
         x0, y0 = pontos[i]
         x1, y1 = pontos[(i + 1) % n]
         bresenham(superficie, x0, y0, x1, y1, cor_borda)
+
+def desenhar_poligono_recortado(superficie, pontos, janela, cor):
+    xmin, ymin, xmax, ymax = janela
+    n = len(pontos)
+
+    for i in range(n):
+        x0, y0 = pontos[i]
+        x1, y1 = pontos[(i + 1) % n]
+
+        visivel, rx0, ry0, rx1, ry1 = cohen_sutherland(
+            x0, y0, x1, y1, xmin, ymin, xmax, ymax
+        )
+
+        if visivel:
+            bresenham(superficie,
+                    int(rx0), int(ry0),
+                    int(rx1), int(ry1),
+                    cor)

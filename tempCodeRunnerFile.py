@@ -1,1 +1,3 @@
+import pygame
+
 pygame.K_RIGHT and pygame.K_UP

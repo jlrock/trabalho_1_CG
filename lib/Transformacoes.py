@@ -50,11 +50,3 @@ def aplica_transformacao(m, pontos):
         y_novo = m[1][0]*v[0] + m[1][1]*v[1] + m[1][2]
         novos.append((x_novo, y_novo))
     return novos
-
-def centro_x(poligono):
-    cx = sum(p[0] for p in poligono)/len(poligono)
-    return cx
-
-def centro_y(poligono):
-    cy = sum(p[1] for p in poligono)/len(poligono)
-    return cy
