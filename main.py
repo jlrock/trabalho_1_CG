@@ -1,11 +1,11 @@
 import sys
 import pygame
 import math
+import pyautogui
 from polygons.ameba import draw_ameba
 from utils.capture_key import capture_key
 
-HEIGHT = 1000
-WIDTH = 1000
+WIDTH, HEIGHT = pyautogui.size()
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))

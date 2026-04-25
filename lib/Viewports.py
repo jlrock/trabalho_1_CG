@@ -1,4 +1,4 @@
-from Transformacoes import *
+from lib.Transformacoes import *
 
 def janela_viewport(janela, viewport):
     Wxmin, Wymin, Wxmax, Wymax = janela
