@@ -64,3 +64,76 @@ def desenhar_poligono_recortado(superficie, pontos, janela, cor):
                     int(rx0), int(ry0),
                     int(rx1), int(ry1),
                     cor)
+
+def desenhar_circulo(superficie, xc, yc, raio, cor):
+    x = 0
+    y = raio
+    d = 1 - raio  
+
+    def plotar_pontos_circulo(xc, yc, x, y):
+        setPixel(superficie, xc + x, yc + y, cor)
+        setPixel(superficie, xc - x, yc + y, cor)
+        setPixel(superficie, xc + x, yc - y, cor)
+        setPixel(superficie, xc - x, yc - y, cor)
+        setPixel(superficie, xc + y, yc + x, cor)
+        setPixel(superficie, xc - y, yc + x, cor)
+        setPixel(superficie, xc + y, yc - x, cor)
+        setPixel(superficie, xc - y, yc - x, cor)
+
+    plotar_pontos_circulo(xc, yc, x, y)
+
+    while x < y:
+        if d < 0:
+            d = d + 2 * x + 3
+        else:
+            d = d + 2 * (x - y) + 5
+            y -= 1
+        x += 1
+        plotar_pontos_circulo(xc, yc, x, y)
+
+def desenhar_elipse(superficie, xc, yc, rx, ry, cor):
+    x = 0
+    y = ry
+
+    rx2 = rx * rx
+    ry2 = ry * ry
+    dois_rx2 = 2 * rx2
+    dois_ry2 = 2 * ry2
+    
+    p1 = ry2 - (rx2 * ry) + (0.25 * rx2)
+    dx = dois_ry2 * x
+    dy = dois_rx2 * y
+    
+    def plotar_pontos_elipse(xc, yc, x, y):
+        setPixel(superficie, xc + x, yc + y, cor)
+        setPixel(superficie, xc - x, yc + y, cor)
+        setPixel(superficie, xc + x, yc - y, cor)
+        setPixel(superficie, xc - x, yc - y, cor)
+
+    while dx < dy:
+        plotar_pontos_elipse(xc, yc, x, y)
+        if p1 < 0:
+            x += 1
+            dx += dois_ry2
+            p1 += dx + ry2
+        else:
+            x += 1
+            y -= 1
+            dx += dois_ry2
+            dy -= dois_rx2
+            p1 += dx - dy + ry2
+            
+    p2 = (ry2 * (x + 0.5) * (x + 0.5)) + (rx2 * (y - 1) * (y - 1)) - (rx2 * ry2)
+    
+    while y >= 0:
+        plotar_pontos_elipse(xc, yc, x, y)
+        if p2 > 0:
+            y -= 1
+            dy -= dois_rx2
+            p2 += rx2 - dy
+        else:
+            y -= 1
+            x += 1
+            dx += dois_ry2
+            dy -= dois_rx2
+            p2 += dx - dy + rx2
