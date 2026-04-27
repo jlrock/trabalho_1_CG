@@ -1,5 +1,6 @@
-from lib.Motor_grafico import setPixel
+from lib.Motor_grafico import *
 from lib.Recorte import *
+from lib.Preenchimento import *
 
 def bresenham(superficie, x0, y0, x1, y1, cor):
     steep = abs(y1 - y0) > abs(x1 - x0)

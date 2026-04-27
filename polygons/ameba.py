@@ -1,12 +1,13 @@
 import math
 from lib.Primitivas import *
+from lib.Preenchimento import *
 
 def draw_ameba(superficie, cor, w, h, r, animation):
     animated_r = r + math.sin(animation / 20) * (r * 0.05)
     pontos_da_curva = gerar_pontos_curva(animated_r, w, h, animation)
     desenhar_poligono(superficie, pontos_da_curva, cor)
 
-def gerar_pontos_curva(R, center_x, center_y, animation, resolucao=200):
+def gerar_pontos_curva(R, center_x, center_y, animation, resolucao=240):
     pontos = []
     for i in range(resolucao + 1):
         theta = (i / resolucao) * (2 * math.pi)
