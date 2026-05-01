@@ -19,7 +19,7 @@ ameba_pos_y = HEIGHT / 2
 ameba_r = 100
 ameba_speed = 1
 animation = 0
-normalized_diagonal_speed = 1/math.sqrt(2*math.pow(ameba_speed, 2))
+normalized_diagonal_speed = ameba_speed/math.sqrt(2)
     
 while running:
     
