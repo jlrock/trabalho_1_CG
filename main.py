@@ -24,7 +24,7 @@ animation = 0
 normalized_diagonal_speed = 1/math.sqrt(2*math.pow(ameba_speed, 2))
 
 food_list: Food = []
-for i in range(10):
+for i in range(20):
     random_x = random.randint(0, WIDTH)
     random_y = random.randint(0, HEIGHT)
     new_food = Food(i, random_x, random_y)
@@ -50,7 +50,7 @@ while running:
         distancia_colisao_quadrada = (ameba_r + food.raio) ** 2
 
         if distancia_quadrada < distancia_colisao_quadrada:
-            ameba_r += 10
+            ameba_r += 5
         else:
             comidas_sobreviventes.append(food)
             food.draw(screen, (255, 0, 0))
