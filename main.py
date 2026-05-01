@@ -18,7 +18,7 @@ pygame.key.set_repeat(1, 5)
 
 ameba_pos_x = WIDTH / 2
 ameba_pos_y = HEIGHT / 2
-ameba_r = 100
+ameba_r = 10
 ameba_speed = 1
 animation = 0
 normalized_diagonal_speed = 1/math.sqrt(2*math.pow(ameba_speed, 2))
@@ -42,8 +42,19 @@ while running:
     draw_ameba(screen, (0,0,0), ameba_pos_x, ameba_pos_y, ameba_r, animation)
     animation+=1
     
+    comidas_sobreviventes = []
     for food in food_list:
-        food.draw(screen, (255,0,0))
+        dx = ameba_pos_x - food.pos_x
+        dy = ameba_pos_y - food.pos_y
+        distancia_quadrada = (dx * dx) + (dy * dy)
+        distancia_colisao_quadrada = (ameba_r + food.raio) ** 2
+
+        if distancia_quadrada < distancia_colisao_quadrada:
+            ameba_r += 10
+        else:
+            comidas_sobreviventes.append(food)
+            food.draw(screen, (255, 0, 0))
+    food_list = comidas_sobreviventes
 
     pygame.display.flip()
     clock.tick(60)
