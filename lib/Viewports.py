@@ -5,7 +5,7 @@ def janela_viewport(janela, viewport):
     Vxmin, Vymin, Vxmax, Vymax = viewport
 
     sx = (Vxmax - Vxmin) / (Wxmax - Wxmin)
-    sy = (Vymin - Vymax) / (Wymax - Wymin) 
+    sy = (Vymax - Vymin) / (Wymax - Wymin)
 
     m = identidade()
 
@@ -13,6 +13,6 @@ def janela_viewport(janela, viewport):
 
     m = multiplica_matrizes(escala(sx, sy), m)
 
-    m = multiplica_matrizes(translacao(Vxmin, Vymax), m)
+    m = multiplica_matrizes(translacao(Vxmin, Vymin), m)
 
     return m
