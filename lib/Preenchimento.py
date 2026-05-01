@@ -178,3 +178,7 @@ def scanline_texture(superficie, pontos, uvs, textura, tex_w, tex_h):
                 if 0 <= tx < tex_w and 0 <= ty < tex_h:
                     cor = textura.get_at((tx, ty))
                     setPixel(superficie, x, y, cor)
+
+def one_scanline(superficie, x_inicial, x_final, y, cor):
+    for xp in range(int(x_inicial), int(x_final)+1):
+        setPixel(superficie, xp, y, cor)

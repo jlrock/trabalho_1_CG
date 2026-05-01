@@ -69,28 +69,24 @@ def desenhar_poligono_recortado(superficie, pontos, janela, cor):
 def desenhar_circulo(superficie, xc, yc, raio, cor):
     x = 0
     y = raio
-    d = 1 - raio  
-
-    def plotar_pontos_circulo(xc, yc, x, y):
-        setPixel(superficie, xc + x, yc + y, cor)
-        setPixel(superficie, xc - x, yc + y, cor)
-        setPixel(superficie, xc + x, yc - y, cor)
-        setPixel(superficie, xc - x, yc - y, cor)
-        setPixel(superficie, xc + y, yc + x, cor)
-        setPixel(superficie, xc - y, yc + x, cor)
-        setPixel(superficie, xc + y, yc - x, cor)
-        setPixel(superficie, xc - y, yc - x, cor)
-
-    plotar_pontos_circulo(xc, yc, x, y)
-
+    d = 1 - raio 
+    
+    one_scanline(superficie, xc - y, xc + y, yc, cor)
     while x < y:
+        previous_y = y
         if d < 0:
             d = d + 2 * x + 3
         else:
             d = d + 2 * (x - y) + 5
             y -= 1
         x += 1
-        plotar_pontos_circulo(xc, yc, x, y)
+        
+        one_scanline(superficie, xc - y, xc + y, yc+x, cor)
+        one_scanline(superficie, xc - y, xc + y, yc-x, cor)
+        
+        if y < previous_y and previous_y != x:
+            one_scanline(superficie, xc - (x - 1), xc + (x - 1), yc + previous_y, cor)
+            one_scanline(superficie, xc - (x - 1), xc + (x - 1), yc - previous_y, cor)
 
 def desenhar_elipse(superficie, xc, yc, rx, ry, cor):
     x = 0
@@ -105,19 +101,16 @@ def desenhar_elipse(superficie, xc, yc, rx, ry, cor):
     dx = dois_ry2 * x
     dy = dois_rx2 * y
     
-    def plotar_pontos_elipse(xc, yc, x, y):
-        setPixel(superficie, xc + x, yc + y, cor)
-        setPixel(superficie, xc - x, yc + y, cor)
-        setPixel(superficie, xc + x, yc - y, cor)
-        setPixel(superficie, xc - x, yc - y, cor)
-
     while dx < dy:
-        plotar_pontos_elipse(xc, yc, x, y)
         if p1 < 0:
             x += 1
             dx += dois_ry2
             p1 += dx + ry2
         else:
+            one_scanline(superficie, xc - x, xc + x, yc + y, cor)
+            if y != 0:
+                one_scanline(superficie, xc - x, xc + x, yc - y, cor)
+            
             x += 1
             y -= 1
             dx += dois_ry2
@@ -127,7 +120,10 @@ def desenhar_elipse(superficie, xc, yc, rx, ry, cor):
     p2 = (ry2 * (x + 0.5) * (x + 0.5)) + (rx2 * (y - 1) * (y - 1)) - (rx2 * ry2)
     
     while y >= 0:
-        plotar_pontos_elipse(xc, yc, x, y)
+        one_scanline(superficie, xc - x, xc + x, yc + y, cor)
+        if y != 0:
+            one_scanline(superficie, xc - x, xc + x, yc - y, cor)
+        
         if p2 > 0:
             y -= 1
             dy -= dois_rx2

@@ -1,3 +1,1 @@
-import pygame
-
-pygame.K_RIGHT and pygame.K_UP
+(0,255,100)

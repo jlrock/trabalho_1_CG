@@ -39,7 +39,7 @@ while running:
         ameba_pos_x, ameba_pos_y = capture_key(ameba_pos_x, ameba_pos_y, ameba_speed, normalized_diagonal_speed)
 
     screen.fill((255, 255, 255))
-    draw_ameba(screen, (0,0,0), ameba_pos_x, ameba_pos_y, ameba_r, animation)
+    draw_ameba(screen, (0,255,100), ameba_pos_x, ameba_pos_y, ameba_r, animation)
     animation+=1
     
     comidas_sobreviventes = []
