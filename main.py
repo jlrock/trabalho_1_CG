@@ -7,7 +7,7 @@ from polygons.ameba import *
 from utils.capture_key import capture_key
 from polygons.food import Food
 from lib import *
-from polygons.ameba import gerar_pontos_curva
+from polygons.minimap import draw_minimap
 
 WIDTH, HEIGHT = pyautogui.size()
 
@@ -47,19 +47,17 @@ while running:
     viewport_principal = (0, 0, WIDTH, HEIGHT)
     matriz_camera_principal = janela_viewport(janela_principal, viewport_principal)
     
+    padding = 10
     janela_minimapa = (0, 0, MUNDO_W, MUNDO_H)
-    viewport_minimapa = (WIDTH - MINIMAPA_W, 0, WIDTH, MINIMAPA_H)
+    viewport_minimapa = (WIDTH - MINIMAPA_W-padding, padding, WIDTH-padding, MINIMAPA_H+padding)
     matriz_camera_minimapa = janela_viewport(janela_minimapa, viewport_minimapa)
 
     screen.fill((100, 100, 100))
-    
     for food in food_list:
         food.draw_with_camera(screen, (255, 0, 0), matriz_camera_principal)
     draw_ameba_with_camera(screen, [(0,255,100), (0,255,0)], ameba_pos_x, ameba_pos_y, ameba_r, animation, matriz_camera_principal)
     
-    area_minimapa = pygame.Rect(WIDTH - MINIMAPA_W, 0, MINIMAPA_W, MINIMAPA_H)
-    pygame.draw.rect(screen, (30, 30, 30), area_minimapa)
-    
+    draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding)
     for food in food_list:
         food.draw_with_camera(screen, (255, 0, 0), matriz_camera_minimapa, raio_tela=2)
     draw_ameba_with_camera(screen, [(0,255,100), (0,255,0)], ameba_pos_x, ameba_pos_y, ameba_r, animation, matriz_camera_minimapa)
