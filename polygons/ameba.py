@@ -1,12 +1,17 @@
 import math
-from lib.Primitivas import *
-from lib.Preenchimento import *
-
-def draw_ameba(superficie, cor, w, h, r, animation):
+from lib.Primitivas import desenhar_poligono
+from lib.Preenchimento import scanline_fill_gradiente, scanline_fill
+from lib.Transformacoes import cria_transformacao, multiplica_matrizes,aplica_transformacao,translacao
+    
+def draw_ameba_with_camera(superficie, cores, mundo_x, mundo_y, r, animation, matriz_camera):
     animated_r = r + math.sin(animation / 20) * (r * 0.05)
-    pontos_da_curva = gerar_pontos_curva(animated_r, w, h, animation)
-    desenhar_poligono(superficie, pontos_da_curva, cor)
-    scanline_fill(superficie, pontos_da_curva, cor)
+    pontos_locais = gerar_pontos_curva(animated_r, 0, 0, animation)
+    matriz_objeto = cria_transformacao()
+    matriz_objeto = multiplica_matrizes(translacao(mundo_x, mundo_y), matriz_objeto)
+    matriz_final = multiplica_matrizes(matriz_camera, matriz_objeto)
+    pontos_tela = aplica_transformacao(matriz_final, pontos_locais)
+    desenhar_poligono(superficie, pontos_tela, cores[0])
+    scanline_fill_gradiente(superficie, pontos_tela, [cores[0]] * len(pontos_tela))
 
 def gerar_pontos_curva(R, center_x, center_y, animation, resolucao=150):
     pontos = []

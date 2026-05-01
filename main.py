@@ -3,7 +3,7 @@ import pygame
 import math
 import pyautogui
 import random
-from polygons.ameba import draw_ameba
+from polygons.ameba import *
 from utils.capture_key import capture_key
 from polygons.food import Food
 from lib import *
@@ -34,21 +34,7 @@ for i in range(20):
     random_y = random.randint(0, HEIGHT)
     new_food = Food(i, random_x, random_y)
     food_list.append(new_food)
-    
-def draw_ameba_com_camera(superficie, cores, mundo_x, mundo_y, r, animation, matriz_camera):
-    animated_r = r + math.sin(animation / 20) * (r * 0.05)
-    
-    pontos_locais = gerar_pontos_curva(animated_r, 0, 0, animation)
 
-    matriz_objeto = cria_transformacao()
-    matriz_objeto = multiplica_matrizes(translacao(mundo_x, mundo_y), matriz_objeto)
-    
-    matriz_final = multiplica_matrizes(matriz_camera, matriz_objeto)
-    pontos_tela = aplica_transformacao(matriz_final, pontos_locais)
-
-    desenhar_poligono(superficie, pontos_tela, cores[0])
-    scanline_fill_gradiente(superficie, pontos_tela, [cores[0]] * len(pontos_tela))
-    
 while running:
     
     for event in pygame.event.get():
@@ -68,24 +54,15 @@ while running:
     screen.fill((100, 100, 100))
     
     for food in food_list:
-        p_mundo = [(food.pos_x, food.pos_y)]
-        p_tela = aplica_transformacao(matriz_camera_principal, p_mundo)
-        
-        if 0 <= p_tela[0][0] <= WIDTH and 0 <= p_tela[0][1] <= HEIGHT:
-            desenhar_circulo(screen, p_tela[0][0], p_tela[0][1], 10, (255, 0, 0))
-
-    draw_ameba_com_camera(screen, [(0,255,100), (0,255,0)], ameba_pos_x, ameba_pos_y, ameba_r, animation, matriz_camera_principal)
+        food.draw_with_camera(screen, (255, 0, 0), matriz_camera_principal)
+    draw_ameba_with_camera(screen, [(0,255,100), (0,255,0)], ameba_pos_x, ameba_pos_y, ameba_r, animation, matriz_camera_principal)
     
     area_minimapa = pygame.Rect(WIDTH - MINIMAPA_W, 0, MINIMAPA_W, MINIMAPA_H)
     pygame.draw.rect(screen, (30, 30, 30), area_minimapa)
+    
     for food in food_list:
-        p_mundo = [(food.pos_x, food.pos_y)]
-        p_tela = aplica_transformacao(matriz_camera_minimapa, p_mundo)
-        desenhar_circulo(screen, p_tela[0][0], p_tela[0][1], 2, (255, 0, 0))
-
-    p_ameba = [(ameba_pos_x, ameba_pos_y)]
-    p_ameba_radar = aplica_transformacao(matriz_camera_minimapa, p_ameba)
-    desenhar_circulo(screen, p_ameba_radar[0][0], p_ameba_radar[0][1], 4, (0, 255, 100))
+        food.draw_with_camera(screen, (255, 0, 0), matriz_camera_minimapa, raio_tela=2)
+    draw_ameba_with_camera(screen, [(0,255,100), (0,255,0)], ameba_pos_x, ameba_pos_y, ameba_r, animation, matriz_camera_minimapa)
 
     comidas_sobreviventes = []
     for food in food_list:
