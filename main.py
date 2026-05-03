@@ -54,13 +54,13 @@ while running:
 
     screen.fill((100, 100, 100))
     for food in food_list:
-        food.draw_with_camera(screen, (255, 0, 0), matriz_camera_principal)
-    draw_ameba_with_camera(screen, [(0,255,100), (0,255,0)], ameba_pos_x, ameba_pos_y, ameba_r, animation, matriz_camera_principal)
+        food.draw(screen, (255, 0, 0), matriz_camera_principal)
+    draw_ameba(screen, [(0,255,100), (0,255,0)], ameba_pos_x, ameba_pos_y, ameba_r, animation, matriz_camera_principal)
     
-    draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding)
+    minimap_constraints = draw_minimap(WIDTH, HEIGHT, MINIMAPA_W, MINIMAPA_H, screen, padding)
     for food in food_list:
-        food.draw_with_camera(screen, (255, 0, 0), matriz_camera_minimapa, raio_tela=2)
-    draw_ameba_with_camera(screen, [(0,255,100), (0,255,0)], ameba_pos_x, ameba_pos_y, ameba_r, animation, matriz_camera_minimapa)
+        food.draw(screen, (255, 0, 0), matriz_camera_minimapa, raio_tela=1)
+    draw_ameba(screen, [(0,255,100), (0,255,0)], ameba_pos_x, ameba_pos_y, ameba_r, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints)
 
     comidas_sobreviventes = []
     for food in food_list:
