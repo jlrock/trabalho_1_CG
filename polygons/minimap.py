@@ -1,7 +1,7 @@
 from lib.Preenchimento import scanline_fill_gradiente
-from lib.Primitivas import desenhar_poligono
+from lib.Primitivas import desenhar_poligono_recortado
 
-def draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding):
+def draw_minimap(WIDTH, HEIGHT, MINIMAPA_W, MINIMAPA_H, screen, padding):
     x_min = WIDTH - MINIMAPA_W - padding
     y_min = padding
     x_max = WIDTH - padding
@@ -24,4 +24,6 @@ def draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding):
     ]
 
     scanline_fill_gradiente(screen, pontos_fundo_minimapa, cores_fundo_minimapa)
-    desenhar_poligono(screen, pontos_fundo_minimapa, (150, 150, 150))
+    desenhar_poligono_recortado(screen, pontos_fundo_minimapa, (x_min, y_min, x_max, y_max), (150, 150, 150))
+    
+    return (x_min, y_min, x_max, y_max)
