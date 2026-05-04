@@ -2,7 +2,7 @@ import sys
 import pygame
 import pyautogui
 import random
-from polygons.ameba import *
+from polygons.ameba import Ameba
 from utils.capture_key import capture_key
 from polygons.food import Food
 from lib import *
