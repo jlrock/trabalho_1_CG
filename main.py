@@ -9,7 +9,6 @@ from lib import *
 from polygons.minimap import draw_minimap
 
 WIDTH, HEIGHT = pyautogui.size()
-
 MUNDO_W, MUNDO_H = (2000,2000)
 MINIMAPA_W, MINIMAPA_H = (200, 200)
 
@@ -20,6 +19,7 @@ clock = pygame.time.Clock()
 running = True
 pygame.key.set_repeat(1, 5)
 animation = 0
+minimap_bg = pygame.image.load("assets/minimap_bg.png").convert_alpha()
 
 ameba = Ameba(10, 1, WIDTH/2, HEIGHT/2, (0,255,100))
 
@@ -54,7 +54,7 @@ while running:
         food.draw(screen, (255, 0, 0), matriz_camera_principal)
     ameba.draw(screen, animation, matriz_camera_principal)
     
-    minimap_constraints = draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding)
+    minimap_constraints = draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding, minimap_bg)
     for food in food_list:
         food.draw(screen, (255, 0, 0), matriz_camera_minimapa, raio_tela=1)
     ameba.draw(screen, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints)
