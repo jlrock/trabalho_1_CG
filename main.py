@@ -57,7 +57,14 @@ while running:
 
     screen.fill((100, 100, 100))
     for food in food_list:
-        food.draw(screen, matriz_camera_principal)
+        dist_x = abs(ameba.pos_x - food.pos_x)
+        dist_y = abs(ameba.pos_y - food.pos_y)
+        
+        limite_x = (WIDTH / 2) + food.radius + 50
+        limite_y = (HEIGHT / 2) + food.radius + 50
+        
+        if dist_x < limite_x and dist_y < limite_y:
+            food.draw(screen, matriz_camera_principal)
     ameba.draw(screen, animation, matriz_camera_principal)
     
     minimap_constraints = draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding, minimap_bg)
