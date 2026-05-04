@@ -54,7 +54,7 @@ while running:
         food.draw(screen, (255, 0, 0), matriz_camera_principal)
     ameba.draw(screen, animation, matriz_camera_principal)
     
-    minimap_constraints = draw_minimap(WIDTH, HEIGHT, MINIMAPA_W, MINIMAPA_H, screen, padding)
+    minimap_constraints = draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding)
     for food in food_list:
         food.draw(screen, (255, 0, 0), matriz_camera_minimapa, raio_tela=1)
     ameba.draw(screen, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints)
