@@ -40,6 +40,8 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if pygame.key.get_pressed()[pygame.K_q]:
+            running = False
         
         ameba_pos_x, ameba_pos_y = capture_key(ameba_pos_x, ameba_pos_y, ameba_speed, normalized_diagonal_speed)
     
@@ -73,8 +75,16 @@ while running:
             ameba_r += 5
         else:
             comidas_sobreviventes.append(food)
+            
+    if(ameba_pos_x < 0):
+        ameba_pos_x = 0;
+    if(ameba_pos_x > 2000):
+        ameba_pos_x = 2000;
+    if(ameba_pos_y < 0):
+        ameba_pos_y = 0;
+    if(ameba_pos_y > 2000):
+        ameba_pos_y = 2000;
     food_list = comidas_sobreviventes
-
     animation+=1
     pygame.display.flip()
     clock.tick(60)
