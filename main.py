@@ -24,10 +24,16 @@ minimap_bg = pygame.image.load("assets/minimap_bg.png").convert_alpha()
 ameba = Ameba(10, 1, WIDTH/2, HEIGHT/2, (0,255,100))
 
 food_list: Food = []
+food_colors = [
+    (255,0,0),
+    (238,255,0),
+    (255,0,230)
+]
 for i in range(20):
     random_x = random.randint(0, WIDTH)
     random_y = random.randint(0, HEIGHT)
-    new_food = Food(i, random_x, random_y)
+    randint = random.randrange(10,31,10)
+    new_food = Food(i, random_x, random_y, randint, food_colors[int((randint/10)-1)])
     food_list.append(new_food)
 
 while running:
@@ -51,12 +57,12 @@ while running:
 
     screen.fill((100, 100, 100))
     for food in food_list:
-        food.draw(screen, (255, 0, 0), matriz_camera_principal)
+        food.draw(screen, matriz_camera_principal)
     ameba.draw(screen, animation, matriz_camera_principal)
     
     minimap_constraints = draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding, minimap_bg)
     for food in food_list:
-        food.draw(screen, (255, 0, 0), matriz_camera_minimapa, raio_tela=1)
+        food.draw(screen, matriz_camera_minimapa, food.radius/10)
     ameba.draw(screen, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints)
 
     comidas_sobreviventes = []
@@ -64,10 +70,10 @@ while running:
         dx = ameba.pos_x - food.pos_x
         dy = ameba.pos_y - food.pos_y
         distancia_quadrada = (dx * dx) + (dy * dy)
-        distancia_colisao_quadrada = (ameba.radius + food.raio) ** 2
+        distancia_colisao_quadrada = (ameba.radius + food.radius) ** 2
 
         if distancia_quadrada < distancia_colisao_quadrada:
-            ameba.radius += 5
+            ameba.radius += food.radius
         else:
             comidas_sobreviventes.append(food)
             
