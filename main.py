@@ -1,9 +1,8 @@
 import sys
 import pygame
-import math
 import pyautogui
 import random
-from polygons.ameba import *
+from polygons.ameba import Ameba
 from utils.capture_key import capture_key
 from polygons.food import Food
 from lib import *
@@ -20,13 +19,9 @@ pygame.display.set_caption("Game")
 clock = pygame.time.Clock()
 running = True
 pygame.key.set_repeat(1, 5)
-
-ameba_pos_x = WIDTH / 2
-ameba_pos_y = HEIGHT / 2
-ameba_r = 10
-ameba_speed = 1
 animation = 0
-normalized_diagonal_speed = 1/math.sqrt(2*math.pow(ameba_speed, 2))
+
+ameba = Ameba(10, 1, WIDTH/2, HEIGHT/2, (0,255,100))
 
 food_list: Food = []
 for i in range(20):
@@ -40,10 +35,12 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if pygame.key.get_pressed()[pygame.K_q]:
+            running = False
         
-        ameba_pos_x, ameba_pos_y = capture_key(ameba_pos_x, ameba_pos_y, ameba_speed, normalized_diagonal_speed)
+        ameba.pos_x, ameba.pos_y = capture_key(ameba.pos_x, ameba.pos_y, ameba.speed)
     
-    janela_principal = (ameba_pos_x - (WIDTH / 2), ameba_pos_y - (HEIGHT / 2), ameba_pos_x + (WIDTH / 2), ameba_pos_y + (HEIGHT / 2))
+    janela_principal = (ameba.pos_x - (WIDTH / 2), ameba.pos_y - (HEIGHT / 2), ameba.pos_x + (WIDTH / 2), ameba.pos_y + (HEIGHT / 2))
     viewport_principal = (0, 0, WIDTH, HEIGHT)
     matriz_camera_principal = janela_viewport(janela_principal, viewport_principal)
     
@@ -55,26 +52,26 @@ while running:
     screen.fill((100, 100, 100))
     for food in food_list:
         food.draw(screen, (255, 0, 0), matriz_camera_principal)
-    draw_ameba(screen, [(0,255,100), (0,255,0)], ameba_pos_x, ameba_pos_y, ameba_r, animation, matriz_camera_principal)
+    ameba.draw(screen, animation, matriz_camera_principal)
     
     minimap_constraints = draw_minimap(WIDTH, HEIGHT, MINIMAPA_W, MINIMAPA_H, screen, padding)
     for food in food_list:
         food.draw(screen, (255, 0, 0), matriz_camera_minimapa, raio_tela=1)
-    draw_ameba(screen, [(0,255,100), (0,255,0)], ameba_pos_x, ameba_pos_y, ameba_r, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints)
+    ameba.draw(screen, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints)
 
     comidas_sobreviventes = []
     for food in food_list:
-        dx = ameba_pos_x - food.pos_x
-        dy = ameba_pos_y - food.pos_y
+        dx = ameba.pos_x - food.pos_x
+        dy = ameba.pos_y - food.pos_y
         distancia_quadrada = (dx * dx) + (dy * dy)
-        distancia_colisao_quadrada = (ameba_r + food.raio) ** 2
+        distancia_colisao_quadrada = (ameba.radius + food.raio) ** 2
 
         if distancia_quadrada < distancia_colisao_quadrada:
-            ameba_r += 5
+            ameba.radius += 5
         else:
             comidas_sobreviventes.append(food)
+            
     food_list = comidas_sobreviventes
-
     animation+=1
     pygame.display.flip()
     clock.tick(60)
