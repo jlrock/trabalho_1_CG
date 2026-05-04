@@ -12,7 +12,7 @@ class Ameba():
         self.color = color
     
     def draw(self, superficie, animation, matriz_camera, is_minimap=False, janela_recorte=None):
-        animated_r = self.radius + math.sin(animation / 20) * (self.radius * 0.05)
+        animated_r = self.radius + math.sin(animation/5) * (self.radius * 0.05)
         pontos_locais = gerar_pontos_curva(animated_r, 0, 0, animation)
         matriz_objeto = cria_transformacao()
         matriz_objeto = multiplica_matrizes(translacao(self.pos_x, self.pos_y), matriz_objeto)
