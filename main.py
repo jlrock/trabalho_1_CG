@@ -20,6 +20,7 @@ running = True
 pygame.key.set_repeat(1, 5)
 animation = 0
 minimap_bg = pygame.image.load("assets/minimap_bg.png").convert_alpha()
+map_bg = pygame.image.load("assets/map_bg.jpg")
 
 ameba = Ameba(10, 1, WIDTH/2, HEIGHT/2, (0,255,100))
 
@@ -43,6 +44,8 @@ while running:
     janela_principal = (ameba.pos_x - (WIDTH / 2), ameba.pos_y - (HEIGHT / 2), ameba.pos_x + (WIDTH / 2), ameba.pos_y + (HEIGHT / 2))
     viewport_principal = (0, 0, WIDTH, HEIGHT)
     matriz_camera_principal = janela_viewport(janela_principal, viewport_principal)
+    pontos_fundo_mundo = [(0, 0), (MUNDO_W, 0), (MUNDO_W, MUNDO_H), (0, MUNDO_H)]
+    pontos_fundo_tela = aplica_transformacao(matriz_camera_principal, pontos_fundo_mundo)
     
     padding = 10
     janela_minimapa = (0, 0, MUNDO_W, MUNDO_H)
@@ -50,6 +53,7 @@ while running:
     matriz_camera_minimapa = janela_viewport(janela_minimapa, viewport_minimapa)
 
     screen.fill((100, 100, 100))
+    scanline_texture(screen, pontos_fundo_tela, [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], map_bg, map_bg.get_width(), map_bg.get_height())
     for food in food_list:
         food.draw(screen, (255, 0, 0), matriz_camera_principal)
     ameba.draw(screen, animation, matriz_camera_principal)
