@@ -6,6 +6,7 @@ from polygons.ameba import Ameba
 from utils.capture_key import capture_key
 from utils.display_hud import display_hud
 from polygons.food import Food
+from polygons.button import Button
 from lib import *
 from polygons.minimap import draw_minimap
 
@@ -54,14 +55,18 @@ while running:
                 food_list.append(new_food)
                 ameba_max_radius += new_food.radius
             game_mode = "game"
+        if game_mode == "end" and pygame.key.get_pressed()[pygame.K_m]:
+            game_mode = "menu"
         if game_mode == "game":
             ameba.pos_x, ameba.pos_y = capture_key(ameba.pos_x, ameba.pos_y, ameba.speed)
 
     screen.fill((100, 100, 100))
     
     if game_mode == "menu" or game_mode == "end":
-        press_space_label = game_font.render("Press 'Space' key to start", True, (255,255,255))
-        screen.blit(press_space_label, ((WIDTH/2)-(press_space_label.get_width()/2), HEIGHT-100))
+        play_button = Button(screen, (WIDTH/2)-200, HEIGHT-100, 200, 40, (255,255,0), (255,255,0), "Play [Space]")
+        play_button.draw()
+        quit_button = Button(screen, (WIDTH/2) + 200, HEIGHT-100, 200, 40, (255,255,0), (255,255,0), "Quit [Q]")
+        quit_button.draw()
         
     if game_mode == "game":
         janela_principal = (ameba.pos_x - (WIDTH / 2), ameba.pos_y - (HEIGHT / 2), ameba.pos_x + (WIDTH / 2), ameba.pos_y + (HEIGHT / 2))
@@ -122,6 +127,8 @@ while running:
     if game_mode == "end":
         size_label = game_font.render("Size: " + str(ameba.radius-10) + "/" + str(ameba_max_radius), True, (255,255,255))
         screen.blit(size_label, ((WIDTH/2)-(size_label.get_width()/2), 200))
+        menu_button = Button(screen, (WIDTH/2), HEIGHT-200, 200, 40, (255,255,0), (255,255,0), "Menu [M]")
+        menu_button.draw()
         if player_status == "won":
             final_label = game_font.render("You Won!", True, (255,255,0))
             time_label = game_font.render("Your time: " + str(time), True, (255,255,255))
