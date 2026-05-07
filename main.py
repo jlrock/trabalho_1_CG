@@ -56,6 +56,8 @@ while running:
     matriz_camera_minimapa = janela_viewport(janela_minimapa, viewport_minimapa)
 
     screen.fill((100, 100, 100))
+    pontos_borda_tela = aplica_transformacao(matriz_camera_principal, [(0,0),(MUNDO_W,0), (MUNDO_W,MUNDO_H), (0, MUNDO_H)])
+    desenhar_poligono_recortado(screen, pontos_borda_tela, (0,0,MUNDO_W,MUNDO_H), (255,255,255))
     for food in food_list:
         dist_x = abs(ameba.pos_x - food.pos_x)
         dist_y = abs(ameba.pos_y - food.pos_y)
