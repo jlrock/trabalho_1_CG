@@ -18,6 +18,7 @@ pygame.display.set_caption("Game")
 clock = pygame.time.Clock()
 running = True
 pygame.key.set_repeat(1, 5)
+game_font = pygame.font.SysFont('Arial', 32)
 animation = 0
 minimap_bg = pygame.image.load("assets/minimap_bg.png").convert_alpha()
 
@@ -35,6 +36,8 @@ for i in range(20):
     randint = random.randrange(10,31,10)
     new_food = Food(i, random_x, random_y, randint, food_colors[int((randint/10)-1)])
     food_list.append(new_food)
+
+text_surface = game_font.render("Amebaformers", False, (255,255,255))
 
 while running:
     
@@ -73,6 +76,8 @@ while running:
     for food in food_list:
         food.draw(screen, matriz_camera_minimapa, food.radius/10, is_minimap=True)
     ameba.draw(screen, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints)
+    
+    screen.blit(text_surface, (0,0))
 
     comidas_sobreviventes = []
     for food in food_list:
