@@ -5,7 +5,7 @@ import random
 from polygons.ameba import Ameba
 from utils.capture_key import capture_key
 from utils.display_hud import display_hud
-from polygons.food import Food
+from polygons.food import Food, draw_menu_food
 from polygons.button import Button
 from lib import *
 from polygons.minimap import draw_minimap
@@ -36,6 +36,17 @@ ameba_max_radius: int = 0;
 
 food_list: Food = []
 food_colors = [(255,0,0),(238,255,0),(255,0,230)]
+menu_food = []
+for i in range(30):
+    rand_x = random.randint(50, WIDTH-50)
+    rand_y = random.randint(50, HEIGHT-50)
+    rand_radius = random.randint(10, 30)
+    rand_r = random.randint(0, 255)
+    rand_g = random.randint(0, 255)
+    rand_b = random.randint(0, 255)
+    new_food = Food(i, rand_x, rand_y, rand_radius, (rand_r, rand_g, rand_b))
+    new_food.pulse_offset = random.uniform(0, math.pi * 2)     
+    menu_food.append(new_food)
 
 while running:
     dt_time = clock.tick(60)/1000
@@ -64,14 +75,9 @@ while running:
             ameba.pos_x, ameba.pos_y = capture_key(ameba.pos_x, ameba.pos_y, ameba.speed)
 
     screen.fill((100, 100, 100))
-    
-    if game_mode == "menu" or game_mode == "end":
-        play_button = Button(screen, (WIDTH/2)-200, HEIGHT-100, 200, 40, (255,255,0), (255,255,0), "Play [Space]")
-        play_button.draw()
-        quit_button = Button(screen, (WIDTH/2) + 200, HEIGHT-100, 200, 40, (255,255,0), (255,255,0), "Quit [Q]")
-        quit_button.draw()
         
     if game_mode == "menu":
+        draw_menu_food(screen, menu_food, animation)
         draw_menu_ameba(screen, WIDTH, HEIGHT, animation)
         title_label = menu_font.render("Amebaformers", True, (0,255,100))
         screen.blit(title_label, ((WIDTH/2)-(title_label.get_width()/2), (HEIGHT/2)-(title_label.get_height()/2)))
@@ -132,6 +138,12 @@ while running:
             player_status = "lost"
         
         display_hud(ameba, ameba_max_radius, time, screen, WIDTH, game_font)
+        
+    if game_mode == "menu" or game_mode == "end":
+        play_button = Button(screen, (WIDTH/2)-200, HEIGHT-100, 200, 40, (255,255,0), (255,255,0), "Play [Space]")
+        play_button.draw()
+        quit_button = Button(screen, (WIDTH/2) + 200, HEIGHT-100, 200, 40, (255,255,0), (255,255,0), "Quit [Q]")
+        quit_button.draw()
     
     if game_mode == "end":
         size_label = game_font.render("Size: " + str(ameba.radius-10) + "/" + str(ameba_max_radius), True, (255,255,255))
