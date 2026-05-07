@@ -4,6 +4,7 @@ import pyautogui
 import random
 from polygons.ameba import Ameba
 from utils.capture_key import capture_key
+from utils.display_hud import display_hud
 from polygons.food import Food
 from lib import *
 from polygons.minimap import draw_minimap
@@ -75,10 +76,7 @@ while running:
     minimap_constraints = draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding, minimap_bg)
     for food in food_list:
         food.draw(screen, matriz_camera_minimapa, food.radius/10, is_minimap=True)
-    ameba.draw(screen, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints)
-    
-    size_label_surface = game_font.render(("Size: " + str(ameba.radius-10) + "/" + str(ameba_max_radius)), True, (255,255,255))
-    screen.blit(size_label_surface, (padding,padding))
+    ameba.draw(screen, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints) 
 
     comidas_sobreviventes = []
     for food in food_list:
@@ -97,8 +95,7 @@ while running:
     if len(comidas_sobreviventes) > 0:
         time+=dt_time
         time = round(time, 3)
-    timer_label_surface = game_font.render(("Time: " + str(time)), True, (255,255,255))
-    screen.blit(timer_label_surface, (padding, HEIGHT-(padding*5)))
+    display_hud(ameba, ameba_max_radius, time, screen, WIDTH, game_font)
     animation+=1
     pygame.display.flip()
 
