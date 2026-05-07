@@ -23,6 +23,7 @@ animation = 0
 minimap_bg = pygame.image.load("assets/minimap_bg.png").convert_alpha()
 
 ameba = Ameba(10, 1, WIDTH/2, HEIGHT/2, (0,255,100))
+ameba_max_radius: int = 0;
 
 food_list: Food = []
 food_colors = [
@@ -35,9 +36,8 @@ for i in range(20):
     random_y = random.randint(0, MUNDO_H)
     randint = random.randrange(10,31,10)
     new_food = Food(i, random_x, random_y, randint, food_colors[int((randint/10)-1)])
+    ameba_max_radius += new_food.radius
     food_list.append(new_food)
-
-text_surface = game_font.render("Amebaformers", False, (255,255,255))
 
 while running:
     
@@ -77,7 +77,8 @@ while running:
         food.draw(screen, matriz_camera_minimapa, food.radius/10, is_minimap=True)
     ameba.draw(screen, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints)
     
-    screen.blit(text_surface, (0,0))
+    text_surface = game_font.render(("Size: " + str(ameba.radius-10) + "/" + str(ameba_max_radius)), True, (255,255,255))
+    screen.blit(text_surface, (padding,padding))
 
     comidas_sobreviventes = []
     for food in food_list:
