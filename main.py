@@ -31,28 +31,29 @@ ameba = Ameba(10, 1, WIDTH/2, HEIGHT/2, (0,255,100))
 ameba_max_radius: int = 0;
 
 food_list: Food = []
-food_colors = [
-    (255,0,0),
-    (238,255,0),
-    (255,0,230)
-]
-for i in range(20):
-    random_x = random.randint(0, MUNDO_W)
-    random_y = random.randint(0, MUNDO_H)
-    randint = random.randrange(10,31,10)
-    new_food = Food(i, random_x, random_y, randint, food_colors[int((randint/10)-1)])
-    ameba_max_radius += new_food.radius
-    food_list.append(new_food)
+food_colors = [(255,0,0),(238,255,0),(255,0,230)]
 
 while running:
+    dt_time = clock.tick(60)/1000
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if pygame.key.get_pressed()[pygame.K_q]:
             running = False
-        if pygame.key.get_pressed()[pygame.K_SPACE]:
+        if game_mode != "game" and pygame.key.get_pressed()[pygame.K_SPACE]:
+            time = 0
+            player_status = ""
+            ameba = Ameba(10, 1, WIDTH/2, HEIGHT/2, (0,255,100))
+            ameba_max_radius = 0
+            food_list.clear()
+            for i in range(20):
+                random_x = random.randint(0, MUNDO_W)
+                random_y = random.randint(0, MUNDO_H)
+                randint = random.randrange(10,31,10)
+                new_food = Food(i, random_x, random_y, randint, food_colors[int((randint/10)-1)])
+                food_list.append(new_food)
+                ameba_max_radius += new_food.radius
             game_mode = "game"
-            time = 0;
         if game_mode == "game":
             ameba.pos_x, ameba.pos_y = capture_key(ameba.pos_x, ameba.pos_y, ameba.speed)
 
@@ -104,7 +105,6 @@ while running:
                 comidas_sobreviventes.append(food)
                 
         food_list = comidas_sobreviventes
-        dt_time = clock.tick(60)/1000
         if len(food_list) > 0 and time <= MAX_TIME:
             time+=dt_time
             time = round(time, 3)
@@ -112,16 +112,26 @@ while running:
         if len(food_list) == 0 and time <= MAX_TIME:
             game_mode = "end"
             player_status = "won"
+        
+        if time > MAX_TIME and len(food_list) > 0:
+            game_mode = "end"
+            player_status = "lost"
+        
         display_hud(ameba, ameba_max_radius, time, screen, WIDTH, game_font)
     
     if game_mode == "end":
+        size_label = game_font.render("Size: " + str(ameba.radius-10) + "/" + str(ameba_max_radius), True, (255,255,255))
+        screen.blit(size_label, ((WIDTH/2)-(size_label.get_width()/2), 200))
         if player_status == "won":
-            final_label = game_font.render("You Won!", True, (255,255,255))
+            final_label = game_font.render("You Won!", True, (255,255,0))
             time_label = game_font.render("Your time: " + str(time), True, (255,255,255))
-            size_label = game_font.render("Size: " + str(ameba_max_radius), True, (255,255,255))
             screen.blit(final_label, ((WIDTH/2)-(final_label.get_width()/2), 100))
             screen.blit(time_label, ((WIDTH/2)-(time_label.get_width()/2), 150))
-            screen.blit(size_label, ((WIDTH/2)-(size_label.get_width()/2), 200))
+        if player_status == "lost":
+            final_label = game_font.render("You Lost!", True, (255,0,0))
+            time_label = game_font.render("Your time is up!", True, (255,255,255))
+            screen.blit(final_label, ((WIDTH/2)-(final_label.get_width()/2), 100))
+            screen.blit(time_label, ((WIDTH/2)-(time_label.get_width()/2), 150))
 
     animation+=1
     pygame.display.flip()
