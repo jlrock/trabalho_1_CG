@@ -23,6 +23,7 @@ game_font = pygame.font.SysFont('Arial', 32)
 animation = 0
 minimap_bg = pygame.image.load("assets/minimap_bg.png").convert_alpha()
 time = 0;
+game_mode: str = "menu"
 
 ameba = Ameba(10, 1, WIDTH/2, HEIGHT/2, (0,255,100))
 ameba_max_radius: int = 0;
@@ -47,55 +48,65 @@ while running:
             running = False
         if pygame.key.get_pressed()[pygame.K_q]:
             running = False
-        
-        ameba.pos_x, ameba.pos_y = capture_key(ameba.pos_x, ameba.pos_y, ameba.speed)
-    
-    janela_principal = (ameba.pos_x - (WIDTH / 2), ameba.pos_y - (HEIGHT / 2), ameba.pos_x + (WIDTH / 2), ameba.pos_y + (HEIGHT / 2))
-    viewport_principal = (0, 0, WIDTH, HEIGHT)
-    matriz_camera_principal = janela_viewport(janela_principal, viewport_principal)
-    
-    padding = 10
-    janela_minimapa = (0, 0, MUNDO_W, MUNDO_H)
-    viewport_minimapa = (WIDTH - MINIMAPA_W-padding, padding, WIDTH-padding, MINIMAPA_H+padding)
-    matriz_camera_minimapa = janela_viewport(janela_minimapa, viewport_minimapa)
+        if pygame.key.get_pressed()[pygame.K_SPACE]:
+            game_mode = "game"
+            time = 0;
+        if game_mode == "game":
+            ameba.pos_x, ameba.pos_y = capture_key(ameba.pos_x, ameba.pos_y, ameba.speed)
 
     screen.fill((100, 100, 100))
-    pontos_borda_tela = aplica_transformacao(matriz_camera_principal, [(0,0),(MUNDO_W,0), (MUNDO_W,MUNDO_H), (0, MUNDO_H)])
-    desenhar_poligono_recortado(screen, pontos_borda_tela, (0,0,MUNDO_W,MUNDO_H), (255,255,255))
-    for food in food_list:
-        dist_x = abs(ameba.pos_x - food.pos_x)
-        dist_y = abs(ameba.pos_y - food.pos_y)
-        
-        limite_x = (WIDTH / 2) + food.radius + 50
-        limite_y = (HEIGHT / 2) + food.radius + 50
-        
-        if dist_x < limite_x and dist_y < limite_y:
-            food.draw(screen, matriz_camera_principal)
-    ameba.draw(screen, animation, matriz_camera_principal)
     
-    minimap_constraints = draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding, minimap_bg)
-    for food in food_list:
-        food.draw(screen, matriz_camera_minimapa, food.radius/10, is_minimap=True)
-    ameba.draw(screen, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints) 
-
-    comidas_sobreviventes = []
-    for food in food_list:
-        dx = ameba.pos_x - food.pos_x
-        dy = ameba.pos_y - food.pos_y
-        distancia_quadrada = (dx * dx) + (dy * dy)
-        distancia_colisao_quadrada = (ameba.radius + food.radius) ** 2
-
-        if distancia_quadrada < distancia_colisao_quadrada:
-            ameba.radius += food.radius
-        else:
-            comidas_sobreviventes.append(food)
+    if game_mode == "menu":
+        press_space_label = game_font.render("Press 'Space' key to start", True, (255,255,255))
+        screen.blit(press_space_label, ((WIDTH/2)-(press_space_label.get_width()/2), HEIGHT-100))
+        
+    if game_mode == "game":
+        janela_principal = (ameba.pos_x - (WIDTH / 2), ameba.pos_y - (HEIGHT / 2), ameba.pos_x + (WIDTH / 2), ameba.pos_y + (HEIGHT / 2))
+        viewport_principal = (0, 0, WIDTH, HEIGHT)
+        matriz_camera_principal = janela_viewport(janela_principal, viewport_principal)
+        
+        padding = 10
+        janela_minimapa = (0, 0, MUNDO_W, MUNDO_H)
+        viewport_minimapa = (WIDTH - MINIMAPA_W-padding, padding, WIDTH-padding, MINIMAPA_H+padding)
+        matriz_camera_minimapa = janela_viewport(janela_minimapa, viewport_minimapa)
+    
+        screen.fill((100, 100, 100))
+        pontos_borda_tela = aplica_transformacao(matriz_camera_principal, [(0,0),(MUNDO_W,0), (MUNDO_W,MUNDO_H), (0, MUNDO_H)])
+        desenhar_poligono_recortado(screen, pontos_borda_tela, (0,0,MUNDO_W,MUNDO_H), (255,255,255))
+        for food in food_list:
+            dist_x = abs(ameba.pos_x - food.pos_x)
+            dist_y = abs(ameba.pos_y - food.pos_y)
             
-    food_list = comidas_sobreviventes
-    dt_time = clock.tick(60)/1000
-    if len(comidas_sobreviventes) > 0:
-        time+=dt_time
-        time = round(time, 3)
-    display_hud(ameba, ameba_max_radius, time, screen, WIDTH, game_font)
+            limite_x = (WIDTH / 2) + food.radius + 50
+            limite_y = (HEIGHT / 2) + food.radius + 50
+            
+            if dist_x < limite_x and dist_y < limite_y:
+                food.draw(screen, matriz_camera_principal)
+        ameba.draw(screen, animation, matriz_camera_principal)
+        
+        minimap_constraints = draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding, minimap_bg)
+        for food in food_list:
+            food.draw(screen, matriz_camera_minimapa, food.radius/10, is_minimap=True)
+        ameba.draw(screen, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints) 
+    
+        comidas_sobreviventes = []
+        for food in food_list:
+            dx = ameba.pos_x - food.pos_x
+            dy = ameba.pos_y - food.pos_y
+            distancia_quadrada = (dx * dx) + (dy * dy)
+            distancia_colisao_quadrada = (ameba.radius + food.radius) ** 2
+    
+            if distancia_quadrada < distancia_colisao_quadrada:
+                ameba.radius += food.radius
+            else:
+                comidas_sobreviventes.append(food)
+                
+        food_list = comidas_sobreviventes
+        dt_time = clock.tick(60)/1000
+        if len(comidas_sobreviventes) > 0:
+            time+=dt_time
+            time = round(time, 3)
+        display_hud(ameba, ameba_max_radius, time, screen, WIDTH, game_font)
     animation+=1
     pygame.display.flip()
 
