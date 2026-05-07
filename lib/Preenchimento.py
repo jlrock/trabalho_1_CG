@@ -123,8 +123,8 @@ def scanline_texture(superficie, pontos, uvs, textura, tex_w, tex_h):
     n = len(pontos)
 
     ys = [p[1] for p in pontos]
-    y_min = int(min(ys))
-    y_max = int(max(ys))
+    y_min = max(0, int(min(ys)))
+    y_max = min(superficie.get_height(), int(max(ys)))
 
     for y in range(y_min, y_max):
         inter = []
@@ -165,20 +165,33 @@ def scanline_texture(superficie, pontos, uvs, textura, tex_w, tex_h):
 
             if x_start == x_end:
                 continue
+                
+            x_start_math = int(x_start)
+            x_end_math = int(x_end)
+            
+            dx = x_end_math - x_start_math
+            
+            passo_u = (u_end - u_start) / dx if dx != 0 else 0
+            passo_v = (v_end - v_start) / dx if dx != 0 else 0
 
-            for x in range(int(x_start), int(x_end) + 1):
-                t = (x - x_start) / (x_end - x_start)
+            x_start_clamp = max(0, x_start_math)
+            x_end_clamp = min(superficie.get_width() - 1, x_end_math)
 
-                u = u_start + t * (u_end - u_start)
-                v = v_start + t * (v_end - v_start)
+            offset_x = x_start_clamp - x_start_math
+            u_atual = u_start + (passo_u * offset_x)
+            v_atual = v_start + (passo_v * offset_x)
 
-                tx = int(u * (tex_w - 1))
-                ty = int(v * (tex_h - 1))
+            for x in range(x_start_clamp, x_end_clamp + 1):
+                tx = int(u_atual * (tex_w - 1))
+                ty = int(v_atual * (tex_h - 1))
 
                 if 0 <= tx < tex_w and 0 <= ty < tex_h:
                     cor = textura.get_at((tx, ty))
                     if cor.a > 0:
                         setPixel(superficie, x, y, cor)
+                
+                u_atual += passo_u
+                v_atual += passo_v
 
 def one_scanline(superficie, x_inicial, x_final, y, cor):
     for xp in range(int(x_inicial), int(x_final)+1):

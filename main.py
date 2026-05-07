@@ -26,6 +26,7 @@ game_font = pygame.font.SysFont('Arial', 32)
 menu_font = pygame.font.SysFont('Arial', 50)
 animation = 0
 minimap_bg = pygame.image.load("assets/minimap_bg.png").convert_alpha()
+map_bg = pygame.image.load("assets/map_bg.jpg")
 time = 0;
 game_mode: str = "menu"
 player_status: str = ""
