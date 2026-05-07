@@ -9,6 +9,7 @@ from polygons.food import Food
 from polygons.button import Button
 from lib import *
 from polygons.minimap import draw_minimap
+from polygons.menu_ameba import draw_menu_ameba
 
 WIDTH, HEIGHT = pyautogui.size()
 MUNDO_W, MUNDO_H = (2000,2000)
@@ -70,9 +71,10 @@ while running:
         quit_button.draw()
         
     if game_mode == "menu":
-        desenhar_elipse(screen, WIDTH/2, HEIGHT/2, 400, 250, (0,255,100))
-        title_label = menu_font.render("Amebaformers", True, (100,100,100))
+        draw_menu_ameba(screen, WIDTH, HEIGHT, animation)
+        title_label = menu_font.render("Amebaformers", True, (0,255,100))
         screen.blit(title_label, ((WIDTH/2)-(title_label.get_width()/2), (HEIGHT/2)-(title_label.get_height()/2)))
+        bresenham(screen, WIDTH/3+150,(HEIGHT/2)+30, (WIDTH/3)+490,(HEIGHT/2)+30, (0,255,100))
         
     if game_mode == "game":
         janela_principal = (ameba.pos_x - (WIDTH / 2), ameba.pos_y - (HEIGHT / 2), ameba.pos_x + (WIDTH / 2), ameba.pos_y + (HEIGHT / 2))
