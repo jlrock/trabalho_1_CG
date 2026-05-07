@@ -80,7 +80,7 @@ while running:
         distancia_colisao_quadrada = (ameba.radius + food.radius) ** 2
 
         if distancia_quadrada < distancia_colisao_quadrada:
-            ameba.radius += food.radius
+            ameba.radius += (food.radius / 2)
         else:
             comidas_sobreviventes.append(food)
             
