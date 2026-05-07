@@ -12,6 +12,7 @@ from polygons.minimap import draw_minimap
 WIDTH, HEIGHT = pyautogui.size()
 MUNDO_W, MUNDO_H = (2000,2000)
 MINIMAPA_W, MINIMAPA_H = (200, 200)
+MAX_TIME: int = 60
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -24,6 +25,7 @@ animation = 0
 minimap_bg = pygame.image.load("assets/minimap_bg.png").convert_alpha()
 time = 0;
 game_mode: str = "menu"
+player_status: str = ""
 
 ameba = Ameba(10, 1, WIDTH/2, HEIGHT/2, (0,255,100))
 ameba_max_radius: int = 0;
@@ -56,7 +58,7 @@ while running:
 
     screen.fill((100, 100, 100))
     
-    if game_mode == "menu":
+    if game_mode == "menu" or game_mode == "end":
         press_space_label = game_font.render("Press 'Space' key to start", True, (255,255,255))
         screen.blit(press_space_label, ((WIDTH/2)-(press_space_label.get_width()/2), HEIGHT-100))
         
@@ -103,10 +105,24 @@ while running:
                 
         food_list = comidas_sobreviventes
         dt_time = clock.tick(60)/1000
-        if len(comidas_sobreviventes) > 0:
+        if len(food_list) > 0 and time <= MAX_TIME:
             time+=dt_time
             time = round(time, 3)
+        
+        if len(food_list) == 0 and time <= MAX_TIME:
+            game_mode = "end"
+            player_status = "won"
         display_hud(ameba, ameba_max_radius, time, screen, WIDTH, game_font)
+    
+    if game_mode == "end":
+        if player_status == "won":
+            final_label = game_font.render("You Won!", True, (255,255,255))
+            time_label = game_font.render("Your time: " + str(time), True, (255,255,255))
+            size_label = game_font.render("Size: " + str(ameba_max_radius), True, (255,255,255))
+            screen.blit(final_label, ((WIDTH/2)-(final_label.get_width()/2), 100))
+            screen.blit(time_label, ((WIDTH/2)-(time_label.get_width()/2), 150))
+            screen.blit(size_label, ((WIDTH/2)-(size_label.get_width()/2), 200))
+
     animation+=1
     pygame.display.flip()
 
