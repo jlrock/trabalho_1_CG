@@ -30,8 +30,8 @@ food_colors = [
     (255,0,230)
 ]
 for i in range(20):
-    random_x = random.randint(0, WIDTH)
-    random_y = random.randint(0, HEIGHT)
+    random_x = random.randint(0, MUNDO_W)
+    random_y = random.randint(0, MUNDO_H)
     randint = random.randrange(10,31,10)
     new_food = Food(i, random_x, random_y, randint, food_colors[int((randint/10)-1)])
     food_list.append(new_food)
@@ -69,7 +69,7 @@ while running:
     
     minimap_constraints = draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding, minimap_bg)
     for food in food_list:
-        food.draw(screen, matriz_camera_minimapa, food.radius/10)
+        food.draw(screen, matriz_camera_minimapa, food.radius/10, is_minimap=True)
     ameba.draw(screen, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints)
 
     comidas_sobreviventes = []

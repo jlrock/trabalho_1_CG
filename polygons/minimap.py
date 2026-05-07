@@ -1,6 +1,5 @@
 from lib.Preenchimento import scanline_fill_gradiente, scanline_texture
 from lib.Primitivas import desenhar_poligono_recortado
-import pygame
 
 def draw_minimap(WIDTH, MINIMAPA_W, MINIMAPA_H, screen, padding, minimap_bg):
     x_min = WIDTH - MINIMAPA_W - padding

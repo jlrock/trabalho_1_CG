@@ -66,27 +66,51 @@ def desenhar_poligono_recortado(superficie, pontos, janela, cor):
                     int(rx1), int(ry1),
                     cor)
 
-def desenhar_circulo(superficie, xc, yc, raio, cor):
+def desenhar_circulo(superficie, xc, yc, raio, cor, is_minimap: bool = False):
     x = 0
     y = raio
     d = 1 - raio 
-    
-    one_scanline(superficie, xc - y, xc + y, yc, cor)
-    while x < y:
-        previous_y = y
-        if d < 0:
-            d = d + 2 * x + 3
-        else:
-            d = d + 2 * (x - y) + 5
-            y -= 1
-        x += 1
+
+    if not is_minimap:
+        one_scanline(superficie, xc - y, xc + y, yc, cor)
+        while x < y:
+            previous_y = y
+            if d < 0:
+                d = d + 2 * x + 3
+            else:
+                d = d + 2 * (x - y) + 5
+                y -= 1
+            x += 1
+            
+            one_scanline(superficie, xc - y, xc + y, yc+x, cor)
+            one_scanline(superficie, xc - y, xc + y, yc-x, cor)
+            
+            if y < previous_y and previous_y != x:
+                one_scanline(superficie, xc - (x - 1), xc + (x - 1), yc + previous_y, cor)
+                one_scanline(superficie, xc - (x - 1), xc + (x - 1), yc - previous_y, cor)
+
+    else:
+        def plotar_8_pontos(px, py):
+            setPixel(superficie, xc + px, yc + py, cor)
+            setPixel(superficie, xc - px, yc + py, cor)
+            setPixel(superficie, xc + px, yc - py, cor)
+            setPixel(superficie, xc - px, yc - py, cor)
+            setPixel(superficie, xc + py, yc + px, cor)
+            setPixel(superficie, xc - py, yc + px, cor)
+            setPixel(superficie, xc + py, yc - px, cor)
+            setPixel(superficie, xc - py, yc - px, cor)
+
+        plotar_8_pontos(x, y)
         
-        one_scanline(superficie, xc - y, xc + y, yc+x, cor)
-        one_scanline(superficie, xc - y, xc + y, yc-x, cor)
-        
-        if y < previous_y and previous_y != x:
-            one_scanline(superficie, xc - (x - 1), xc + (x - 1), yc + previous_y, cor)
-            one_scanline(superficie, xc - (x - 1), xc + (x - 1), yc - previous_y, cor)
+        while x < y:
+            if d < 0:
+                d = d + 2 * x + 3
+            else:
+                d = d + 2 * (x - y) + 5
+                y -= 1
+            x += 1
+            
+            plotar_8_pontos(x, y)
 
 def desenhar_elipse(superficie, xc, yc, rx, ry, cor):
     x = 0

@@ -25,7 +25,7 @@ class Ameba():
             desenhar_poligono(superficie, pontos_tela, self.color)
             scanline_fill(superficie, pontos_tela, self.color)
 
-def gerar_pontos_curva(R, center_x, center_y, animation, resolucao=150):
+def gerar_pontos_curva(R, center_x, center_y, animation, resolucao=100):
     pontos = []
     for i in range(resolucao + 1):
         theta = (i / resolucao) * (2 * math.pi)
