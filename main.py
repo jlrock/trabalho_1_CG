@@ -22,6 +22,7 @@ clock = pygame.time.Clock()
 running = True
 pygame.key.set_repeat(1, 5)
 game_font = pygame.font.SysFont('Arial', 32)
+menu_font = pygame.font.SysFont('Arial', 50)
 animation = 0
 minimap_bg = pygame.image.load("assets/minimap_bg.png").convert_alpha()
 time = 0;
@@ -67,6 +68,11 @@ while running:
         play_button.draw()
         quit_button = Button(screen, (WIDTH/2) + 200, HEIGHT-100, 200, 40, (255,255,0), (255,255,0), "Quit [Q]")
         quit_button.draw()
+        
+    if game_mode == "menu":
+        desenhar_elipse(screen, WIDTH/2, HEIGHT/2, 400, 250, (0,255,100))
+        title_label = menu_font.render("Amebaformers", True, (100,100,100))
+        screen.blit(title_label, ((WIDTH/2)-(title_label.get_width()/2), (HEIGHT/2)-(title_label.get_height()/2)))
         
     if game_mode == "game":
         janela_principal = (ameba.pos_x - (WIDTH / 2), ameba.pos_y - (HEIGHT / 2), ameba.pos_x + (WIDTH / 2), ameba.pos_y + (HEIGHT / 2))
