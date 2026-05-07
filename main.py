@@ -21,6 +21,7 @@ pygame.key.set_repeat(1, 5)
 game_font = pygame.font.SysFont('Arial', 32)
 animation = 0
 minimap_bg = pygame.image.load("assets/minimap_bg.png").convert_alpha()
+time = 0;
 
 ameba = Ameba(10, 1, WIDTH/2, HEIGHT/2, (0,255,100))
 ameba_max_radius: int = 0;
@@ -40,7 +41,6 @@ for i in range(20):
     food_list.append(new_food)
 
 while running:
-    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -77,8 +77,8 @@ while running:
         food.draw(screen, matriz_camera_minimapa, food.radius/10, is_minimap=True)
     ameba.draw(screen, animation, matriz_camera_minimapa, is_minimap=True, janela_recorte=minimap_constraints)
     
-    text_surface = game_font.render(("Size: " + str(ameba.radius-10) + "/" + str(ameba_max_radius)), True, (255,255,255))
-    screen.blit(text_surface, (padding,padding))
+    size_label_surface = game_font.render(("Size: " + str(ameba.radius-10) + "/" + str(ameba_max_radius)), True, (255,255,255))
+    screen.blit(size_label_surface, (padding,padding))
 
     comidas_sobreviventes = []
     for food in food_list:
@@ -93,9 +93,14 @@ while running:
             comidas_sobreviventes.append(food)
             
     food_list = comidas_sobreviventes
+    dt_time = clock.tick(60)/1000
+    if len(comidas_sobreviventes) > 0:
+        time+=dt_time
+        time = round(time, 3)
+    timer_label_surface = game_font.render(("Time: " + str(time)), True, (255,255,255))
+    screen.blit(timer_label_surface, (padding, HEIGHT-(padding*5)))
     animation+=1
     pygame.display.flip()
-    clock.tick(60)
 
 pygame.quit()
 sys.exit()
