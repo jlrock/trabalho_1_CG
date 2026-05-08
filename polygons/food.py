@@ -1,25 +1,45 @@
 from lib.Primitivas import desenhar_circulo, desenhar_poligono
 from lib.Transformacoes import aplica_transformacao, translacao, multiplica_matrizes, escala
-from lib.Preenchimento import scanline_fill
+from lib.Preenchimento import scanline_fill, scanline_texture
 import math
 
 class Food:
-    def __init__(self, id, pos_x, pos_y, radius: int = 10, color = (255, 0, 0), pulse_offset: float = 0):
+    def __init__(self, id, pos_x, pos_y, radius: int = 10, color = (255, 0, 0), pulse_offset: float = 0, texture = None):
         self.id = id,
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.radius = radius
         self.color = color
         self.pulse_offset = pulse_offset
+        self.texture = texture
         
-    def draw(self, surface, matriz_viewport, raio_tela=None, is_minimap: bool = False):
+    def draw(self, surface, matriz_viewport, raio_tela=None, is_minimap: bool = False, animation = None):
         p_mundo = [(self.pos_x, self.pos_y)]
         p_tela = aplica_transformacao(matriz_viewport, p_mundo)
         tela_x, tela_y = p_tela[0]
         r = raio_tela if raio_tela is not None else self.radius
         if 0 <= tela_x <= surface.get_width() and 0 <= tela_y <= surface.get_height():
-            desenhar_circulo(surface, int(tela_x), int(tela_y), r, self.color, is_minimap)
-            
+            if self.texture is None:
+                desenhar_circulo(surface, int(tela_x), int(tela_y), r, self.color, is_minimap)
+            else:
+                velocidade = 30 
+                novo_x = (self.pos_x + (animation * velocidade)) % surface.get_width()
+                pontos_food_mundo = [
+                    (novo_x - self.radius, self.pos_y - self.radius),
+                    (novo_x + self.radius, self.pos_y - self.radius),
+                    (novo_x + self.radius, self.pos_y + self.radius),
+                    (novo_x - self.radius, self.pos_y + self.radius),
+                ]
+                pontos_tela = aplica_transformacao(matriz_viewport, pontos_food_mundo)
+                scanline_texture(
+                    surface, 
+                    pontos_tela, 
+                    [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], 
+                    self.texture, 
+                    self.texture.get_width(), 
+                    self.texture.get_height()
+                )
+                
 def draw_menu_food(screen, menu_food, animation):
     for food in menu_food:
         fator_escala = 1.0 + (math.sin(animation * 0.10 + food.pulse_offset) * 0.3)
