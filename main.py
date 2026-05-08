@@ -27,12 +27,12 @@ menu_font = pygame.font.SysFont('Arial', 50)
 animation = 0
 minimap_bg = pygame.image.load("assets/minimap_bg.png").convert_alpha()
 map_bg = pygame.image.load("assets/map_bg.jpg")
-time = 0;
+time = 0
 game_mode: str = "menu"
 player_status: str = ""
 
 ameba = Ameba(10, 1, WIDTH/2, HEIGHT/2, (0,255,100))
-ameba_max_radius: int = 0;
+ameba_max_radius: int = 0
 
 food_list: Food = []
 food_colors = [(255,0,0),(238,255,0),(255,0,230)]
@@ -76,7 +76,7 @@ while running:
                 randint = random.randrange(10,31,10)
                 new_food = Food(i, random_x, random_y, randint, food_colors[int((randint/10)-1)])
                 food_list.append(new_food)
-                ameba_max_radius += new_food.radius
+                ameba_max_radius += (new_food.radius//3)
             game_mode = "game"
         if game_mode == "end" and pygame.key.get_pressed()[pygame.K_m]:
             game_mode = "menu"
@@ -134,7 +134,7 @@ while running:
             distancia_colisao_quadrada = (ameba.radius + food.radius) ** 2
     
             if distancia_quadrada < distancia_colisao_quadrada:
-                ameba.radius += food.radius
+                ameba.radius += (food.radius//3)
             else:
                 comidas_sobreviventes.append(food)
                 
