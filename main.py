@@ -14,7 +14,7 @@ from polygons.menu_ameba import draw_menu_ameba
 WIDTH, HEIGHT = pyautogui.size()
 MUNDO_W, MUNDO_H = (2000,2000)
 MINIMAPA_W, MINIMAPA_H = (200, 200)
-MAX_TIME: int = 60
+MAX_TIME: int = 50
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -36,7 +36,7 @@ ameba_max_radius: int = 0;
 
 food_list: Food = []
 food_colors = [(255,0,0),(238,255,0),(255,0,230)]
-menu_food = []
+menu_food_list = []
 for i in range(30):
     rand_x = random.randint(50, WIDTH-50)
     rand_y = random.randint(50, HEIGHT-50)
@@ -46,7 +46,16 @@ for i in range(30):
     rand_b = random.randint(0, 255)
     new_food = Food(i, rand_x, rand_y, rand_radius, (rand_r, rand_g, rand_b))
     new_food.pulse_offset = random.uniform(0, math.pi * 2)     
-    menu_food.append(new_food)
+    menu_food_list.append(new_food)
+end_food_list = []
+food_textures =[pygame.image.load("assets/apple.png").convert_alpha(), pygame.image.load("assets/cookie.png").convert_alpha(), pygame.image.load("assets/hamburguer.png").convert_alpha()]
+for i in range(10):
+    rand_x = random.randint(50, WIDTH-50)
+    rand_y = random.randint(50, HEIGHT-50)
+    rand_radius = random.randint(10, 30)
+    rand_texture = random.randrange(0,3,1)
+    new_food = Food(i, rand_x, rand_y, rand_radius, texture=food_textures[rand_texture])
+    end_food_list.append(new_food)
 
 while running:
     dt_time = clock.tick(60)/1000
@@ -77,7 +86,7 @@ while running:
     screen.fill((100, 100, 100))
         
     if game_mode == "menu":
-        draw_menu_food(screen, menu_food, animation)
+        draw_menu_food(screen, menu_food_list, animation)
         draw_menu_ameba(screen, WIDTH, HEIGHT, animation)
         title_label = menu_font.render("Amebaformers", True, (0,255,100))
         screen.blit(title_label, ((WIDTH/2)-(title_label.get_width()/2), (HEIGHT/2)-(title_label.get_height()/2)))
@@ -93,7 +102,6 @@ while running:
         viewport_minimapa = (WIDTH - MINIMAPA_W-padding, padding, WIDTH-padding, MINIMAPA_H+padding)
         matriz_camera_minimapa = janela_viewport(janela_minimapa, viewport_minimapa)
     
-        screen.fill((100, 100, 100))
         pontos_borda_tela = aplica_transformacao(matriz_camera_principal, [(0,0),(MUNDO_W,0), (MUNDO_W,MUNDO_H), (0, MUNDO_H)])
         desenhar_poligono_recortado(screen, pontos_borda_tela, (0,0,MUNDO_W,MUNDO_H), (255,255,255))
         for food in food_list:
@@ -146,6 +154,8 @@ while running:
         quit_button.draw()
     
     if game_mode == "end":
+        for food in end_food_list:
+            food.draw(screen, identidade(), animation=animation)
         size_label = game_font.render("Size: " + str(ameba.radius-10) + "/" + str(ameba_max_radius), True, (255,255,255))
         screen.blit(size_label, ((WIDTH/2)-(size_label.get_width()/2), 200))
         menu_button = Button(screen, (WIDTH/2), HEIGHT-200, 200, 40, (255,255,0), (255,255,0), "Menu [M]")
