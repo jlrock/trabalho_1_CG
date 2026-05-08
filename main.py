@@ -80,6 +80,10 @@ while running:
             game_mode = "game"
         if game_mode == "end" and pygame.key.get_pressed()[pygame.K_m]:
             game_mode = "menu"
+        if game_mode == "menu" and pygame.key.get_pressed()[pygame.K_r]:
+            game_mode = "rules"
+        if game_mode == "rules" and pygame.key.get_pressed()[pygame.K_m]:
+            game_mode = "menu"
         if game_mode == "game":
             ameba.pos_x, ameba.pos_y = capture_key(ameba.pos_x, ameba.pos_y, ameba.speed)
 
@@ -88,6 +92,8 @@ while running:
     if game_mode == "menu":
         draw_menu_food(screen, menu_food_list, animation)
         draw_menu_ameba(screen, WIDTH, HEIGHT, animation)
+        rules_button = Button(screen, (WIDTH/2), HEIGHT-200, 350, 40, (255,255,0), (255,255,0), "View Rules [R]")
+        rules_button.draw()
         title_label = menu_font.render("Amebaformers", True, (0,255,100))
         screen.blit(title_label, ((WIDTH/2)-(title_label.get_width()/2), (HEIGHT/2)-(title_label.get_height()/2)))
         bresenham(screen, WIDTH/3+150,(HEIGHT/2)+30, (WIDTH/3)+490,(HEIGHT/2)+30, (0,255,100))
@@ -147,7 +153,7 @@ while running:
         
         display_hud(ameba, ameba_max_radius, time, screen, WIDTH, game_font)
         
-    if game_mode == "menu" or game_mode == "end":
+    if game_mode == "menu" or game_mode == "end" or game_mode == "rules":
         play_button = Button(screen, (WIDTH/2)-200, HEIGHT-100, 200, 40, (255,255,0), (255,255,0), "Play [Space]")
         play_button.draw()
         quit_button = Button(screen, (WIDTH/2) + 200, HEIGHT-100, 200, 40, (255,255,0), (255,255,0), "Quit [Q]")
@@ -170,6 +176,14 @@ while running:
             time_label = game_font.render("Your time is up!", True, (255,255,255))
             screen.blit(final_label, ((WIDTH/2)-(final_label.get_width()/2), 100))
             screen.blit(time_label, ((WIDTH/2)-(time_label.get_width()/2), 150))
+            
+    if game_mode == "rules":
+        rules_tile = game_font.render("Rules ", True, (255,255,0))
+        rules_labels = game_font.render("1. Ameba has to eat all food before time ends.\n2. Max time is 50s.", True, (255,255,255))
+        screen.blit(rules_tile, ((WIDTH/2)-(rules_tile.get_width()/2), 200))
+        screen.blit(rules_labels, ((WIDTH/2)-(rules_labels.get_width()/2),250))
+        return_button = Button(screen, (WIDTH/2), HEIGHT-200, 350, 40, (255,255,0), (255,255,0), "Return to Mein Menu [M]")
+        return_button.draw()
 
     animation+=1
     pygame.display.flip()
