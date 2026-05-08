@@ -94,7 +94,7 @@ while running:
         draw_menu_ameba(screen, WIDTH, HEIGHT, animation)
         rules_button = Button(screen, (WIDTH/2), HEIGHT-200, 350, 40, (255,255,0), (255,255,0), "View Rules [R]")
         rules_button.draw()
-        title_label = menu_font.render("Amebaformers", True, (0,255,100))
+        title_label = menu_font.render("Mebaformers", True, (0,255,100))
         screen.blit(title_label, ((WIDTH/2)-(title_label.get_width()/2), (HEIGHT/2)-(title_label.get_height()/2)))
         bresenham(screen, WIDTH/3+150,(HEIGHT/2)+30, (WIDTH/3)+490,(HEIGHT/2)+30, (0,255,100))
         
