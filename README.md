@@ -1,151 +1,168 @@
-# 1º Trabalho de Computação Gráfica:
-# Mebaformers - Simulação Celular
+# Mebaformers - Cellular Simulation
 
-Uma simulação interativa de crescimento celular desenvolvida em **Python** e **Pygame**. O jogador assume o controle de uma ameba em um ambiente hostil, onde deve consumir nutrientes para crescer.
+An interactive cellular growth simulation developed in **Pygame**. The player takes control of an amoeba in a hostile environment, where it must consume nutrients to grow.
 
 ---
 
-## Sobre o Projeto
-O objetivo principal deste projeto foi explorar a implementação da lógica de jogo, física e renderização utilizando os recursos fundamentais dentro do Pygame. Diferente de motores prontos, toda a lógica de crescimento, detecção de proximidade e movimentação fluida foi implementada manualmente.
+## About the Project
 
-### Estrutura de Pastas
-```
+The main objective of this project was to explore the implementation of game logic, physics, and rendering using the fundamental resources within Pygame. Unlike off-the-shelf game engines, all the logic for growth, proximity detection, and fluid movement was implemented manually from scratch.
+
+## Gameplay/Demo Video
+*You can [download the video](assets/mebaformers-demo.mp4) directly or [watch it on Google Drive](https://drive.google.com/file/d/15w1MV8mhaxPwcMBZmuFhEtLMk8KhfV0s/view?usp=drive_link)*
+
+### Folder Structure
+
+```text
 mebaformers/
-├── lib/                        # Bilblioteca gráfica
-│   ├── Motor_grafico.py        # setPixel e Clipping de segurança
-│   ├── Preenchimento.py        # Scanline, Gradientes e Texturas
-│   ├── Primitivas.py           # Bresenham, Clipping e Scanline
-│   ├── Recorte.py              # Algoritmo de Cohen-Sutherland
-│   ├── Transformacoes.py       # Matrizes 3x3 e Álgebra Linear
-│   └── Viewports.py            # Mapeamento Viewport
-├── polygons/                   # Entidades do Jogo
-│   ├── ameba.py                # Geração procedural e animação
-│   ├── food.py                 # Gerenciamento de comidas
-│   └── minimap.py              # Lógica do radar/minimapa
-├── utils/                      # Auxiliares
-│   └── capture_key.py          # Input e Normalização de velocidade
-└── main.py                     # Loop principal e integração
+├── lib/                        # Graphics library
+│   ├── Motor_grafico.py        # setPixel and Safety Clipping
+│   ├── Preenchimento.py        # Scanline, Gradients, and Textures
+│   ├── Primitivas.py           # Bresenham, Clipping, and Scanline
+│   ├── Recorte.py              # Cohen-Sutherland Algorithm
+│   ├── Transformacoes.py       # 3x3 Matrices and Linear Algebra
+│   └── Viewports.py            # Viewport Mapping
+├── polygons/                   # Game Entities
+│   ├── ameba.py                # Procedural generation and animation
+│   ├── button.py               # Buttons creation
+│   ├── food.py                 # Food management
+│   ├── menu_ameba.py           # Displaying different ameba in menu
+│   └── minimap.py              # Radar/minimap logic
+├── utils/                      # Helpers
+│   ├── display_hud.py          # Display ameba stats during game
+│   └── capture_key.py          # Input and Speed Normalization
+└── main.py                     # Main loop and integration
 ```
 
-### Principais Funcionalidades:
-O maior destaque deste projeto é que ele não utiliza as funções de desenho padrão do Pygame. Em vez disso, foi desenvolvida uma **pipeline gráfica própria**, processando a renderização pixel a pixel.
-Para começar, a estrutura do código foi dividida em partes para cada funcionalidade.
-Pasta **lib**
+### Main Features
+
+The main highlight of this project is that it does not use standard Pygame drawing functions. Instead, a **custom graphics pipeline** was developed, processing rendering pixel by pixel.
+To begin, the code structure was divided into parts for each functionality.
+
+**lib** Folder
+
 * `Motor_grafico.py`
 
-<p></p>
+The base function `setPixel` was implemented with a **Safety Clipping** system, ensuring that the graphics engine never tries to access coordinates outside the window surface, which optimizes software stability.
 
-A função base `setPixel` foi implementada com um sistema de **Clipping de Segurança**, garantindo que o motor gráfico nunca tente acessar coordenadas fora da superfície da janela, o que otimiza a estabilidade do software.
+To bring **Mebaformers** to life, classic algorithms that are the foundation of computer graphics were implemented:
 
-Para dar vida ao **Mebaformers**, foram implementados algoritmos clássicos que são a base da computação gráfica:
-* **Bresenham (Retas):** Implementação otimizada para desenhar as bordas das amebas e elementos do cenário sem usar aritmética de ponto flutuante pesada.
-* **Ponto Médio (Círculos e Elipses):** As células são renderizadas através da lógica de ponto médio, garantindo simetria perfeita na simulação.
-* **Scanline Fill:** Um sistema de preenchimento por linhas de varredura que permite que as amebas tenham cores sólidas e opacas, processadas dinamicamente.
-* **Sistema de Recorte (Clipping):** Para manter a performance, o jogo utiliza o algoritmo de Cohen-Sutherland. Isso permite que o motor identifique instantaneamente quais partes de uma célula ou linha estão fora da visão do jogador, descartando o processamento desnecessário de pixels invisíveis.
+* **Bresenham (Lines):** Optimized implementation to draw the edges of the amoebas and scenario elements without using heavy floating-point arithmetic.
+* **Midpoint (Circles and Ellipses):** Cells are rendered through midpoint logic, ensuring perfect symmetry in the simulation.
+* **Scanline Fill:** A scanline filling system that allows amoebas to have solid, opaque colors, processed dynamically.
+* **Clipping System:** To maintain performance, the game uses the Cohen-Sutherland algorithm. This allows the engine to instantly identify which parts of a cell or line are outside the player's view, discarding the unnecessary processing of invisible pixels.
 
 * `Preenchimento.py`
 
-* **Interpolação de Cores (Gradientes):** Implementação de um sistema de interpolação linear para criar gradientes dinâmicos nas amebas. Isso permite que a célula mude de cor suavemente dependendo do seu estado de saúde ou evolução.
-* **Mapeamento de Textura (UV Mapping):** O projeto conta com um algoritmo de `scanline_texture` que projeta coordenadas de textura (U, V) em polígonos arbitrários. Isso permite "vestir" as células com padrões orgânicos complexos.
-* **Algoritmo de Flood Fill (Baseado em Pilha):** Para áreas de preenchimento irregular, foi implementada uma versão otimizada do **Flood Fill** usando uma estrutura de dados de pilha para evitar o estouro da memória (**Stack Overflow**) comum em versões recursivas.
-* **Rasterização de Polígonos:** Uso do algoritmo de linha de varredura (**Scanline**) para identificar as interseções dos polígonos em cada linha da tela, garantindo que o preenchimento seja perfeito, sem falhas entre os pixels.
+* **Color Interpolation (Gradients):** Implementation of a linear interpolation system to create dynamic gradients on the amoebas. This allows the cell to change color smoothly depending on its health or evolution state.
+* **Texture Mapping (UV Mapping):** The project features a `scanline_texture` algorithm that projects texture coordinates (U, V) onto arbitrary polygons. This allows "dressing" the cells with complex organic patterns.
+* **Flood Fill Algorithm (Stack-based):** For irregular filling areas, an optimized version of **Flood Fill** was implemented using a stack data structure to avoid the memory overflow (**Stack Overflow**) common in recursive versions.
+* **Polygon Rasterization:** Use of the **Scanline** algorithm to identify polygon intersections on each screen line, ensuring perfect filling with no gaps between pixels.
 
 * `Primitivas.py`
 
-<p>As formas geométricas e a renderização das células são processadas através de algoritmos clássicos de computação gráfica:</p>
+Geometric shapes and cell rendering are processed through classic computer graphics algorithms:
 
-*   **Bresenham:** Algoritmo otimizado para desenho de retas e contornos.
-*   **Ponto Médio (Midpoint):** Utilizado para a renderização matemática de círculos e elipses.
-*   **Cohen-Sutherland:** Sistema de Clipping (recorte) para garantir que apenas o que está dentro da janela de visualização seja processado.
-*   **Scanline Filling:** Preenchimento de formas geométricas via software, manipulando pixel a pixel na superfície.
+* **Bresenham:** Optimized algorithm for drawing lines and outlines.
+* **Midpoint:** Used for the mathematical rendering of circles and ellipses.
+* **Cohen-Sutherland:** Clipping system to ensure that only what is inside the viewport is processed.
+* **Scanline Filling:** Filling geometric shapes via software, manipulating pixel by pixel on the surface.
 
 * `Recorte.py`
 
-<p>Para garantir a fluidez da simulação, foi implementado o algoritmo de Cohen-Sutherland. Este sistema divide o espaço do mundo em 9 regiões através de códigos binários.</p>
+To ensure fluid simulation, the Cohen-Sutherland algorithm was implemented. This system divides the world space into 9 regions using binary codes.
 
-* **Performance:** O motor realiza testes lógicos rápidos para descartar linhas e polígonos que estão totalmente fora da área de visão (viewport).
-* **Precisão:** O recorte é feito matematicamente antes de enviar os pixels para a função de desenho, evitando cálculos desnecessários de rasterização.
+* **Performance:** The engine performs quick logical tests to discard lines and polygons that are completely outside the viewing area (viewport).
+* **Precision:** Clipping is done mathematically before sending the pixels to the drawing function, avoiding unnecessary rasterization calculations.
 
 * `Transformacoes.py`
 
-<p>O Mebaformers processa o movimento e a forma das células através de matrizes de transformação. Em vez de alterar coordenadas manualmente, o motor utiliza:</p>
+Mebaformers processes the movement and shape of the cells through transformation matrices. Instead of manually altering coordinates, the engine uses:
 
-* **Coordenadas Homogêneas:** Uso de matrizes 3x3 para realizar translações, rotações e escalas de forma unificada.
-* **Composição de Matrizes:** O sistema permite multiplicar diferentes matrizes de transformação, aplicando movimentos complexos aos polígonos das células em uma única passagem matemática.
-* **Transformações em Tempo Real:**
-* **Rotação:** As células podem girar suavemente em torno de seu próprio eixo usando funções trigonométricas.
-* **Escala Dinâmica:** O crescimento da ameba ao consumir nutrientes é processado via matrizes de escala.
-* **Translação:** Movimentação fluida pelo ambiente microscópico.
+* **Homogeneous Coordinates:** Use of 3x3 matrices to perform translations, rotations, and scaling in a unified way.
+* **Matrix Composition:** The system allows multiplying different transformation matrices, applying complex movements to the cell polygons in a single mathematical pass.
+* **Real-time Transformations:**
+* **Rotation:** Cells can rotate smoothly around their own axis using trigonometric functions.
+* **Dynamic Scale:** The amoeba's growth upon consuming nutrients is processed via scale matrices.
+* **Translation:** Fluid movement through the microscopic environment.
 
 * `Viewports.py`
 
-<p>O motor implementa um sistema de visualização que separa o mundo lógico das coordenadas da tela. Através de transformações de normalização, o jogo é capaz de:</p>
+The engine implements a viewing system that separates the logical world from the screen coordinates. Through normalization transformations, the game is able to perform:
 
-* **Zoom Dinâmico:** Ao alterar as dimensões da janela, o motor recalcula automaticamente a escala (sx, sy) para ajustar a visão na viewport.
-* **Câmera Livre:** O deslocamento pelo ambiente microscópico é feito via translações matriciais, permitindo que a "câmera" siga a ameba enquanto ela explora o cenário.
-* **Independência de Resolução:** A lógica permite que o mundo do jogo seja renderizado em qualquer tamanho de janela sem distorcer as proporções das células.
+* **Dynamic Zoom:** When altering the window dimensions, the engine automatically recalculates the scale (sx, sy) to adjust the view in the viewport.
+* **Free Camera:** Panning through the microscopic environment is done via matrix translations, allowing the "camera" to follow the amoeba as it explores the scenario.
+* **Resolution Independence:** The logic allows the game world to be rendered in any window size without distorting the cells' proportions.
 
-Pasta **polygons**
+**polygons** Folder
+
 * `ameba.py`
 
-<p>Diferente de jogos que utilizam sprites (imagens prontas), a ameba no Mebaformers é gerada matematicamente em cada frame:</p>
+Unlike games that use sprites (ready-made images), the amoeba in Mebaformers is generated mathematically in every frame:
 
-* **Deformação Dinâmica:** É utilizado a superposição de múltiplas ondas senoidais e cossenoidais para criar um contorno irregular que pulsa organicamente.
-* **Sincronização de Câmera:** A função `draw_ameba_with_camera` demonstra a integração total da pipeline, onde a geometria local do objeto é transformada para as coordenadas do mundo e, finalmente, para o espaço da câmera em tempo real.
-* **Alta Resolução Geométrica:** Cada célula é composta por um polígono de 150 vértices calculados dinamicamente, permitindo deformações suaves sem perda de performance.
+* **Dynamic Deformation:** The superposition of multiple sine and cosine waves is used to create an irregular outline that pulses organically.
+* **Camera Synchronization:** The `draw_ameba_with_camera` function demonstrates the full integration of the pipeline, where the object's local geometry is transformed into world coordinates and, finally, into camera space in real time.
 
 * `food.py`
 
-<p></p>
-
-A classe Food importa tudo o que foi feito na pasta **lib** para tratar a comida (outros polígonos) como objetos dentro do seu sistema de coordenadas do mundo, aplicando a `matriz_camera` neles antes de renderizar.
+The Food class imports everything built in the **lib** folder to treat the food (other polygons) as objects within its world coordinate system, applying the `matriz_camera` to them before rendering.
 
 * `minimap.py`
 
-<p>O jogo conta com um sistema de navegação auxiliar (minimapa) que utiliza a mesma pipeline de renderização do mundo principal:</p>
+The game features an auxiliary navigation system (minimap) that uses the same rendering pipeline as the main world:
 
-* **Fundo Estilizado:** O fundo do minimapa é renderizado com um gradiente vertical, processado via scanline.
-* **Reuso de Código:** Demonstra a versatilidade da biblioteca gráfica, utilizando as mesmas funções de polígonos e preenchimento para elementos estáticos da interface.
+* **Stylized Background:** The minimap background is rendered with a vertical gradient, processed via scanline.
+* **Code Reuse:** Demonstrates the versatility of the graphics library, using the same polygon and filling functions for static interface elements.
 
-Pasta **utils**
+**utils** Folder
+
 * `capture_key.py`
 
-<p>Diferente de implementações simples, o **Mebaformers** utiliza um sistema de movimentação normalizada:</p>
+Unlike simple implementations, **Mebaformers** uses a normalized movement system:
 
-* **Correção de Velocidade Diagonal:** Foi implementado uma lógica para evitar o ganho de velocidade excessivo ao pressionar duas teclas simultaneamente (ex: Cima + Direita).
-* **Input:** É permitido o uso das teclas de seta e das teclas W A S D, garantindo acessibilidade e conforto para diferentes perfis de jogadores.
-* Com o uso da `normalized_diagonal_speed`, é possível que o movimento seja uniforme em todas as direções. 
+* **Diagonal Speed Correction:** Logic was implemented to prevent excessive speed gain when pressing two keys simultaneously (e.g., Up + Right).
+* **Input:** The use of arrow keys and W A S D keys is permitted, ensuring accessibility and comfort for different player profiles.
+* With the use of `normalized_diagonal_speed`, it is possible for movement to be uniform in all directions.
 
 * `main.py`
 
-<p>Aqui é onde tudo o que foi construído nas outras pastas se conecta para criar a experiência do jogo.</p>
+This is where everything built in the other folders connects to create the game experience.
 
-* **Resolução Nativa:** Ao usar o pyautogui, o jogo não tem um tamanho fixo; ele se adapta automaticamente à resolução do monitor do usuário.
-* **Repetição de Teclas:** O `pygame.key.set_repeat(1, 5)` garante que, enquanto o usuário segurar uma tecla, o movimento continue sendo disparado rapidamente, permitindo um controle fluido da ameba.
-* **Matemática Vetorial:** É definido uma velocidade específica para quando o jogador aperta duas teclas (ex: W e D). Isso evita que a ameba "corra mais" na diagonal do que nos eixos retos, mantendo o equilíbrio do desafio.
+* **Native Resolution:** By using pyautogui, the game doesn't have a fixed size; it automatically adapts to the user's monitor resolution.
+* **Key Repetition:** `pygame.key.set_repeat(1, 5)` ensures that as long as the user holds down a key, the movement continues to be triggered quickly, allowing fluid control of the amoeba.
+* **Vector Math:** A specific speed is defined for when the player presses two keys (e.g., W and D). This prevents the amoeba from "running faster" diagonally than on straight axes, maintaining the game's balance.
 
-<p>Foi criado duas "câmeras" usando a mesma função `janela_viewport`:</p>
+Two "cameras" were created using the same `janela_viewport` function:
 
-* **Câmera Principal:**
-* A `janela_principal` é centralizada na posição atual da ameba (`ameba_pos_x`).
-* Conforme a ameba se move, a janela se move com ela, criando o efeito de seguimento de câmera.
-* **Minimapa:**
-* A `janela_minimapa` engloba todo o `MUNDO_W` e `MUNDO_H`.
-* Ela não se move; ela reduz todo o mundo de 2000x2000 pixels para caber dentro de um quadradinho de 200x200 na tela.
+* **Main Camera:**
+* `janela_principal` is centered on the amoeba's current position (`ameba_pos_x`).
+* As the amoeba moves, the window moves with it, creating a camera-following effect.
+* **Minimap:**
+* `janela_minimapa` encompasses the entire `MUNDO_W` and `MUNDO_H`.
+* It does not move; it scales down the entire 2000x2000 pixel world to fit inside a small 200x200 square on the screen.
 
-<p>Dentro do while running, a tela é limpa e desenha tudo duas vezes:</p>
+Inside the while running loop, the screen is cleared and everything is drawn twice:
 
-1. Primeiro Passe: Desenha a comida e a ameba usando a `matriz_camera_principal`. Isso mostra o jogo "de perto".
-2. Segundo Passe: Desenha o fundo do minimapa e, logo em seguida, desenha a comida e a ameba novamente, mas agora usando a `matriz_camera_minimapa`. Isso cria a visão aérea no canto da tela.
-* **Otimização:** É usado a distância ao quadrado para detectar colisão.
-* **Evolução:** Se a distância for menor que a soma dos raios, a ameba "come" a comida (`ameba_r += 5`) e o objeto é removido da lista de sobreviventes.
+1. First Pass: Draws the food and the amoeba using the `matriz_camera_principal`. This shows the game "up close".
 
-## Linguagem e bibliotecas utilizadas
+2. Second Pass: Draws the minimap background and, right after, draws the food and amoeba again, but now using the `matriz_camera_minimapa`. This creates the aerial view in the corner of the screen.
+
+* **Optimization:** Squared distance is used to detect collisions.
+* **Evolution:** If the distance is less than the sum of the radius, the amoeba "eats" the food and the object is removed from the list of survivors.
+
+## Language and Libraries
+
 * Python 3
 * Pygame
 * PyAutoGUI
 * Math
 
-### Pré-requisitos
-Você precisará ter o Python instalado em sua máquina. Para instalar a biblioteca Pygame, execute:
-<p>pip install pygame</p>
+### Prerequisites
+
+You will need to have Python installed on your machine. To install used libraries, run:
+
+```bash
+    pip install pygame
+    pip install pyautogui
+    pip install math
+```
