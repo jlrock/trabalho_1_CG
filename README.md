@@ -165,7 +165,15 @@ Inside the while running loop, the screen is cleared and everything is drawn twi
 You will need to have Python installed on your machine. To install used libraries, run:
 
 ```bash
-    pip install pygame
-    pip install pyautogui
-    pip install math
+pip install pygame
+pip install pyautogui
+pip install math
+```
+
+### How to run Mebaformers
+
+After installed all needed libs, you can open your terminal in project root and run the following command:
+
+```bash
+python main.py
 ```
