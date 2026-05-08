@@ -9,6 +9,9 @@ An interactive cellular growth simulation developed in **Pygame**. The player ta
 The main objective of this project was to explore the implementation of game logic, physics, and rendering using the fundamental resources within Pygame. Unlike off-the-shelf game engines, all the logic for growth, proximity detection, and fluid movement was implemented manually from scratch.
 
 ## Gameplay/Demo Video
+
+<video src="https://github.com/jlrock/trabalho_1_CG/raw/refs/heads/main/assets/mebaformers-demo.mp4" width="100%" controls></video>
+
 *You can [download the video](assets/mebaformers-demo.mp4) directly or [watch it on Google Drive](https://drive.google.com/file/d/15w1MV8mhaxPwcMBZmuFhEtLMk8KhfV0s/view?usp=drive_link)*
 
 ### Folder Structure
